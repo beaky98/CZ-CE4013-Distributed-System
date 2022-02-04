@@ -22,7 +22,6 @@ public class App implements Callable<Integer> {
     boolean resend = true;
 
     public Integer call() throws Exception {
-        System.out.println("Test");
         try {
             // Creates new client instance
             Client client = new Client(ip, port);
@@ -57,10 +56,6 @@ public class App implements Callable<Integer> {
         return 0;
     }
     public static void main(String[] args) {
-        // in 1 line, parse the args, handle errors,
-        // handle requests for help/version info, call the business logic
-        // and obtain an exit status code:
-
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
     }

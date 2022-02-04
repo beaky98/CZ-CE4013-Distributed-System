@@ -7,24 +7,31 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 
-public class Server {
-	private static DatagramSocket ds;
-	private static int server_port;
-	private static double loss_rate;
-	private static boolean at_most_once;
-	private static HashMap<String, String> reqList;
+import picocli.CommandLine;
+import picocli.CommandLine.*;
 
-	public static void main(String[] args) throws IOException {
+@Command(name = "server", description = "Does cool stuff.", mixinStandardHelpOptions = true)
+public class Server implements Callable<Integer> {
+
+    @Option(names = "--port", description = "port number")
+	int server_port = 1234;
+
+    @Option(names = "--loss", description = "percentage of packet loss")
+	double loss_rate = 0.2;
+	
+    @Option(names = "--once", description = "at-most-once invocation semantic")
+	boolean at_most_once = true;
+	
+	private DatagramSocket ds;
+	private HashMap<String, String> reqList;
+
+	public Integer call() throws Exception {
 		// Create socket
-		server_port = 1234;
 		ds = new DatagramSocket(server_port);
 
-		// Percentage of messages to be dropped
-		loss_rate = 0.2;
-
-		// Invocation semantics
-		at_most_once = false;
+		// Store request id / response pairs
 		reqList = new HashMap<String, String>();
 
 		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
@@ -71,6 +78,7 @@ public class Server {
 			}
 		}
 		ds.close();
+		return 0;
 	}
 
 	/**
@@ -81,7 +89,7 @@ public class Server {
 	 * @param port Port number of client
 	 * @throws IOException
 	 */
-	private static void send(String msg, InetAddress ip, int port) throws IOException {
+	private void send(String msg, InetAddress ip, int port) throws IOException {
 		byte[] buf = msg.getBytes();
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
 		ds.send(packet);
@@ -93,7 +101,7 @@ public class Server {
 	 * @return Message from client
 	 * @throws IOException
 	 */
-	private static DatagramPacket receive() throws IOException {
+	private DatagramPacket receive() throws IOException {
 		byte[] buf = new byte[256];
 		DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		ds.receive(packet);
@@ -108,7 +116,7 @@ public class Server {
 	 * @param reqId Request id
 	 * @return Response
 	 */
-	private static String checkReqId(String reqId) {
+	private String checkReqId(String reqId) {
 		if (at_most_once && reqList.containsKey(reqId)) {
 			System.out.println("Retrieving stored response");
 			return reqList.get(reqId);
@@ -122,8 +130,13 @@ public class Server {
 	 * @param reqId Request id
 	 * @param response Response
 	 */
-	private static void storeRes(String reqId, String response) {
+	private void storeRes(String reqId, String response) {
 		if (at_most_once)
 			reqList.put(reqId, response);
 	}
+
+	public static void main(String[] args) {
+        int exitCode = new CommandLine(new Server()).execute(args);
+        System.exit(exitCode);
+    }
 }
