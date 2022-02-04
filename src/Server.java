@@ -10,6 +10,7 @@ public class Server
 {
 	private static DatagramSocket ds;
 	private static int server_port;
+	private static double loss_rate;
 
 	public static void main(String[] args) throws IOException
 	{
@@ -17,12 +18,13 @@ public class Server
 		server_port = 1234;
 		ds = new DatagramSocket(server_port);
 
-		System.out.printf("Running server on port %s...\n", server_port);
+		// Percentage of messages to be dropped
+		loss_rate = 0.2;
+
+		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
 
 		while (true)
 		{
-
-			
 			// Create and receive packet
 			DatagramPacket packet = receive();
 
@@ -34,7 +36,10 @@ public class Server
             int port = packet.getPort();
 			
 			String msg = "Server received: " + received;
-			send(msg, ip, port);
+			if (Math.random() > loss_rate)
+			{
+				send(msg, ip, port);
+			}
 
 			// Exit the server if the client sends "bye"
 			if (received.equals("bye"))

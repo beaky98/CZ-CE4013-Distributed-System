@@ -14,6 +14,7 @@ public class App {
             // Creates new client instance
             Client client = new Client(ip, port);
             
+            int timeout = 1000;
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Starting loop... type 'bye' to exit...");
@@ -24,12 +25,19 @@ public class App {
                 // Gets input from command line
                 String msg = sc.nextLine();
 
-                // Send msg to server
-                client.send(msg);
+                // // Send msg to server
+                // client.send(msg);
 
-                // Wait for server response
-                String received = client.receive();
-                System.out.println(received);
+                // // Wait for server response
+                // String res = client.receive();
+
+                String res = client.sendWithTimeout(msg, timeout);
+                if (res != null) {
+                    System.out.println(res);
+                }
+                else {
+                    System.out.println("No response received");
+                }
 
                 // break the loop if user enters "bye"
                 if (msg.equals("bye"))

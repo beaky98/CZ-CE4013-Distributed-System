@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 
 public class Client
 {		
@@ -57,5 +58,28 @@ public class Client
 
 		String received = new String(packet.getData(), 0, packet.getLength());
 		return received;
+	}
+
+	/**
+	 * Sends a message to server, and waits for a response
+	 * If no there is no response before the timeout, null string will be returned
+	 * 
+	 * @param msg Message to be sent
+	 * @param timeout Time to wait in milliseconds
+	 * @return Message from server
+	 * @throws IOException
+	 */
+	public String sendWithTimeout(String msg, int timeout) throws IOException
+	{
+		send(msg);
+		this.ds.setSoTimeout(timeout);
+
+		while(true) {
+			try {
+				return receive();
+			} catch (SocketTimeoutException e) {
+				return null;
+			}
+		}
 	}
 }
