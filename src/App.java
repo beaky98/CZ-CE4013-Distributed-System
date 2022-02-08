@@ -22,20 +22,19 @@ public class App implements Callable<Integer> {
     boolean resend = true;
 
     public Integer call() throws Exception {
+
         try {
             // Creates new client instance
             Client client = new Client(ip, port);
 
             Scanner sc = new Scanner(System.in);
-            System.out.println("Starting loop... type 'bye' to exit...");
 
             while (true) {
-
-                // TODO: Get request from banking service
-                String msg = sc.nextLine();
+                // Prints options
+                String payload = BankInterface.printOptions();
 
                 // TODO: Marshal request
-                String req = client.getReqId() + '_' + msg;
+                String req = client.getReqId() + '_' + payload;
 
                 // Waits for response from server
                 String res = client.sendWithTimeout(req, timeout, resend);
@@ -46,8 +45,10 @@ public class App implements Callable<Integer> {
                 }
 
                 // End app if user enters 'bye'
-                if (msg.equals("bye"))
+                if (payload.equals("0")) {
+                    BankInterface.exitMessage();
                     break;
+                }
             }
             sc.close();
         } catch (Exception e) {
@@ -55,6 +56,7 @@ public class App implements Callable<Integer> {
         }
         return 0;
     }
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);

@@ -43,22 +43,25 @@ public class Server implements Callable<Integer> {
 			String req = new String(packet.getData(), 0, packet.getLength());
 			System.out.println("Client: " + req);
 
-			// Get client address and port
-			InetAddress ip = packet.getAddress();
-			int port = packet.getPort();
-
 			// TODO: Unmarshal request to get request id
-			String reqId = "reqId";
+			String[] reqArr = req.split("_", 2);
+			for (int i=0; i<2; i++)
+				System.out.println(reqArr[i]);
+			String reqId = reqArr[0];
 
 			// Checks if request has been sent before
 			String res = checkReqId(reqId);
+
+			// Get client address and port
+			InetAddress ip = packet.getAddress();
+			int port = packet.getPort();
 
 			// New request
 			if (res == null) {
 				// TODO: Unmarshal request to get request type
 				// TODO: Banking Service perfoms request and returns response
 				// TODO: Marshal response
-				res = req;
+				res = "Got message: " + reqArr[1];
 
 				// Stores response
 				storeRes(reqId, res);

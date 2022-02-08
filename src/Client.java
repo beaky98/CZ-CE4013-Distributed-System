@@ -42,7 +42,7 @@ public class Client {
 	 */
 	public String getReqId() {
 		this.reqCount += 1;
-		return this.clientId + "_" + this.reqCount;
+		return this.clientId + "|" + this.reqCount;
 	}
 
 	/**
