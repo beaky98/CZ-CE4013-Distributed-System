@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 import picocli.CommandLine.*;
+import src.Client.Client;
 
 @Command(name = "app", description = "Does cool stuff.", mixinStandardHelpOptions = true)
 public class App implements Callable<Integer> {
