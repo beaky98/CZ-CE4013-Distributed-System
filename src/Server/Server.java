@@ -1,4 +1,4 @@
-package src;
+package src.Server;
 
 // MERGED WITH UDPSERVER?
 
@@ -18,7 +18,7 @@ import picocli.CommandLine.*;
 public class Server implements Callable<Integer> {
 
     @Option(names = "--port", description = "port number")
-	int server_port = 1234;
+	int server_port = 2222;
 
     @Option(names = "--loss", description = "percentage of packet loss")
 	double loss_rate = 0.2;
@@ -77,7 +77,7 @@ public class Server implements Callable<Integer> {
 			}
 
 			// Exit the server if the client sends "bye"
-			if (req.substring(req.length() - 3).equals("bye")) {
+			if (reqArr[1].equals("0")) {
 				System.out.println("Client sent bye.....EXITING");
 				break;
 			}

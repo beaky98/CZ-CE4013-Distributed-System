@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 import picocli.CommandLine.*;
-import src.Client.Client;
+import src.Client.*;
 
 @Command(name = "app", description = "Does cool stuff.", mixinStandardHelpOptions = true)
 public class App implements Callable<Integer> {
@@ -14,7 +14,7 @@ public class App implements Callable<Integer> {
     String ip = "127.0.0.1";
 
     @Option(names = "--port", description = "port number")
-    int port = 1234;
+    int port = 2222;
 
     @Option(names = "--timeout", description = "timeout")
     int timeout = 1000;

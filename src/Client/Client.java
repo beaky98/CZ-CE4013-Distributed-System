@@ -1,4 +1,4 @@
-package src;
+package src.Client;
 
 //TO BE MERGED WITH UDPCLIENT?
 
