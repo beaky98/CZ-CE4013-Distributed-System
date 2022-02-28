@@ -53,10 +53,13 @@ public class BankInterface {
                 request = transfer(false);
                 break;
             case 5:
+                request = monitorUpdate();
                 break;
             case 6:
+                request = IdemTrans();  
                 break;
             case 7:
+                request = nonIdemTrans();
                 break;
             case 0:
                 request = "0";
@@ -74,9 +77,10 @@ public class BankInterface {
         Double balance = askInitialBalance();
 
         System.out.printf("%s, %s, %s, %.2f\n", name, pw, currency, balance);
+        String payload = String.join("_", name, pw, currency, balance.toString());
 
-        String acctNumber = "12345678";
-        return acctNumber;
+        
+        return payload;
     }
 
     public static String closeAccount() {
@@ -85,9 +89,9 @@ public class BankInterface {
         String pw = askPassword(false);
 
         System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
 
-        String acctNumber = "12345678";
-        return acctNumber;
+        return payload;
     }
 
     public static String transfer(boolean deposit) {
@@ -98,8 +102,44 @@ public class BankInterface {
         Double balance = askTransferAmount(deposit);
 
         System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw, currency, balance);
+        String payload = String.join("_", name, acct, pw, currency, balance.toString());
 
-        return "done";
+        //reply with "Done"
+
+        return payload;
+    }
+
+    public static String monitorUpdate() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
+    }
+
+    public static String IdemTrans() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
+    }
+
+    public static String nonIdemTrans() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
     }
 
     public static String askName() {
