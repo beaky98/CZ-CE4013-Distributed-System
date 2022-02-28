@@ -33,6 +33,12 @@ public class App implements Callable<Integer> {
             while (true) {
                 // Prints options
                 String payload = BankInterface.printOptions();
+                
+                // End app if user enters 'bye'
+                if (payload.equals("0")) {
+                    BankInterface.exitMessage();
+                    break;
+                }
 
                 // TODO: Marshal request
                 String req = client.getReqId() + '_' + payload;
@@ -43,12 +49,6 @@ public class App implements Callable<Integer> {
                     System.out.println(res);
                 } else {
                     System.out.println("No response received");
-                }
-
-                // End app if user enters 'bye'
-                if (payload.equals("0")) {
-                    BankInterface.exitMessage();
-                    break;
                 }
             }
             sc.close();
