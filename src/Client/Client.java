@@ -34,6 +34,8 @@ public class Client {
 		this.ip = InetAddress.getByName(ip);
 		this.port = port;
 
+		// this.ds.connect(this.ip, this.port);
+
 		this.clientId = InetAddress.getLocalHost().getHostAddress();
 		this.reqCount = 0;
 	}

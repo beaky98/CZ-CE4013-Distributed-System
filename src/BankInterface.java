@@ -1,8 +1,11 @@
 package src;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class BankInterface {
+
+    private static int PW_LENGTH = 20;
 
     public static Scanner sc = new Scanner(System.in);
 
@@ -17,9 +20,21 @@ public class BankInterface {
         System.out.println("6. Idempotent transaction");
         System.out.println("7. Non-indempotent transaction");
         System.out.println("0. Exit application");
+        
+        String option = "";
+        try {
+            option = sc.next();
+            int int_option = Integer.parseInt(option);
+            if (int_option >= 0 && int_option <= 7) {
+                
+                return selectOption(int_option);
+            }
+        } catch (Exception e) {
 
-        Integer option = sc.nextInt();
-        return selectOption(option);
+        }
+
+        System.out.println("Invalid option");
+        return printOptions();
     }
 
     public static String selectOption(Integer option) {
@@ -54,9 +69,11 @@ public class BankInterface {
 
     public static String createAccount() {
         String name = askName();
-        String pw = askPassword();
+        String pw = askPassword(true);
         String currency = askCurrencyType();
         Double balance = askInitialBalance();
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, pw, currency, balance);
 
         String acctNumber = "12345678";
         return acctNumber;
@@ -65,7 +82,9 @@ public class BankInterface {
     public static String closeAccount() {
         String name = askName();
         String acct = askAccountNumber();
-        String pw = askPassword();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
 
         String acctNumber = "12345678";
         return acctNumber;
@@ -74,9 +93,11 @@ public class BankInterface {
     public static String transfer(boolean deposit) {
         String name = askName();
         String acct = askAccountNumber();
-        String pw = askPassword();
+        String pw = askPassword(false);
         String currency = askCurrencyType();
         Double balance = askTransferAmount(deposit);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw, currency, balance);
 
         return "done";
     }
@@ -88,9 +109,18 @@ public class BankInterface {
         return name;
     }
 
-    public static String askPassword() {
-        System.out.print("Please enter your password: ");
+    public static String askPassword(boolean creating) {
+        String msg = "";
+        if (creating) {
+            msg = " (no longer than " + PW_LENGTH + " characters)";
+        }
+        System.out.printf("Please enter your password%s: ", msg);
         String pw = sc.next();
+
+        if (creating && pw.length() > PW_LENGTH) {
+            System.out.printf("Password must not be longer than %d characters\n", PW_LENGTH);
+            return askPassword(true);
+        }
 
         return pw;
     }
@@ -103,9 +133,27 @@ public class BankInterface {
         for (int i = 0; i < currencies.length; i++) {
             System.out.printf("%d. %s\n", i+1, currencies[i]);
         }
-        Integer option = sc.nextInt();
 
-        return currencies[option - 1];
+        String option = sc.next();
+        int int_option = -1;
+
+        try {
+            int_option = Integer.parseInt(option) - 1;
+        } catch (Exception e) {
+            option = option.toUpperCase();
+            for (int i = 0; i < currencies.length; i++) {
+                if (currencies[i].equals(option)) {
+                    int_option = i;
+                }
+            }
+        }
+
+        if (int_option < 0 || int_option >= currencies.length) {
+            System.out.println("Invalid option");
+            return askCurrencyType();
+        }
+
+        return currencies[int_option];
     }
 
     public static Double askInitialBalance() {

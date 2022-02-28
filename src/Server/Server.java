@@ -24,7 +24,7 @@ public class Server implements Callable<Integer> {
 	double loss_rate = 0.2;
 	
     @Option(names = "--once", description = "at-most-once invocation semantic")
-	boolean at_most_once = true;
+	boolean at_most_once = false;
 	
 	private DatagramSocket ds;
 	private HashMap<String, String> reqList;
@@ -37,6 +37,7 @@ public class Server implements Callable<Integer> {
 		reqList = new HashMap<String, String>();
 
 		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
+		System.out.printf("Using invocation semantic: %s...\n", at_most_once ? "at-most-once": "at-least-once");
 
 		while (true) {
 			// Create and receive packet
