@@ -2,6 +2,7 @@ package src;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class BankInterface {
 
@@ -17,7 +18,7 @@ public class BankInterface {
         System.out.println("3. Deposit money");
         System.out.println("4. Withdraw money");
         System.out.println("5. Monitor updates");
-        System.out.println("6. Idempotent transaction");
+        System.out.println("6. Currency Converter");
         System.out.println("7. Non-indempotent transaction");
         System.out.println("0. Exit application");
         
@@ -56,7 +57,7 @@ public class BankInterface {
                 request = monitorUpdate();
                 break;
             case 6:
-                request = IdemTrans();  
+                request = currencyExch();  
                 break;
             case 7:
                 request = nonIdemTrans();
@@ -114,18 +115,19 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        System.out.printf("%s, %s, %s\n", name, acct, pw);
         String payload = String.join("_", name, acct, pw);
 
         return payload;
     }
 
-    public static String IdemTrans() {
+    public static String currencyExch() {
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
+        askCurrencyConverter();
 
-        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        System.out.printf("%s, %s, %s\n", name, acct, pw);
         String payload = String.join("_", name, acct, pw);
 
         return payload;
@@ -136,7 +138,7 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        System.out.printf("%s, %s, %s\n", name, acct, pw);
         String payload = String.join("_", name, acct, pw);
 
         return payload;
@@ -195,6 +197,72 @@ public class BankInterface {
 
         return currencies[int_option];
     }
+
+    public static void askCurrencyConverter() {
+        double SGD, USD, EUR;
+        DecimalFormat f = new DecimalFormat("##.##");
+        String[] currencies = new String[] {
+            "SGD", "USD", "EUR"
+        };
+        System.out.println("Please select a currency type to convert from: ");
+        for (int i = 0; i < currencies.length; i++) {
+            System.out.printf("%d. %s\n", i+1, currencies[i]);
+        }
+
+        String option = sc.next();
+        int int_option = -1;
+
+        try {
+            int_option = Integer.parseInt(option) - 1;
+        } catch (Exception e) {
+            option = option.toUpperCase();
+            for (int i = 0; i < currencies.length; i++) {
+                if (currencies[i].equals(option)) {
+                    int_option = i;
+                }
+            }
+        }
+
+        if (int_option < 0 || int_option >= currencies.length) {
+            System.out.println("Invalid option");
+            askCurrencyConverter();
+        }
+
+        System.out.printf("Enter the amount you want to convert?");
+        Double amount = sc.nextDouble();
+
+        switch (int_option)
+      {
+         case 1:  // SGD Conversion
+            USD = amount * 0.73644;
+            System.out.println(amount + " SGD = " + f.format(USD) + " USD");
+ 
+            EUR = amount * 0.67031;
+            System.out.println(amount + " SGD = " + f.format(EUR) + " EUR");
+ 
+            break;
+ 
+         case 2:  // USD Conversion
+            SGD = amount * 0.13578;
+            System.out.println(amount + " USD = " + f.format(SGD) + " SGD");
+
+            EUR = amount * 0.91012;
+            System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
+            break;
+ 
+         case 3:  // EUR Conversion
+            SGD = amount * 0.14920;
+            System.out.println(amount + " EUR = " + f.format(SGD) + " SGD");
+
+            USD = amount * 0.10987;
+            System.out.println(amount + " EUR = " + f.format(USD) + " USD");
+            break;
+ 
+          //Default case
+         default:
+            System.out.println("Invalid Input");
+    }
+}
 
     public static Double askInitialBalance() {
         System.out.println("Please enter initial account balance: ");
