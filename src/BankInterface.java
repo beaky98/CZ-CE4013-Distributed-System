@@ -2,6 +2,7 @@ package src;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class BankInterface {
 
@@ -17,7 +18,7 @@ public class BankInterface {
         System.out.println("3. Deposit money");
         System.out.println("4. Withdraw money");
         System.out.println("5. Monitor updates");
-        System.out.println("6. Idempotent transaction");
+        System.out.println("6. Currency Converter");
         System.out.println("7. Non-indempotent transaction");
         System.out.println("0. Exit application");
         
@@ -53,10 +54,13 @@ public class BankInterface {
                 request = transfer(false);
                 break;
             case 5:
+                request = monitorUpdate();
                 break;
             case 6:
+                request = checkBankAcc();  
                 break;
             case 7:
+                request = currencyExch();
                 break;
             case 0:
                 request = "0";
@@ -74,9 +78,10 @@ public class BankInterface {
         Double balance = askInitialBalance();
 
         System.out.printf("%s, %s, %s, %.2f\n", name, pw, currency, balance);
+        String payload = String.join("_", name, pw, currency, balance.toString());
 
-        String acctNumber = "12345678";
-        return acctNumber;
+        
+        return payload;
     }
 
     public static String closeAccount() {
@@ -85,9 +90,9 @@ public class BankInterface {
         String pw = askPassword(false);
 
         System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
 
-        String acctNumber = "12345678";
-        return acctNumber;
+        return payload;
     }
 
     public static String transfer(boolean deposit) {
@@ -98,8 +103,45 @@ public class BankInterface {
         Double balance = askTransferAmount(deposit);
 
         System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw, currency, balance);
+        String payload = String.join("_", name, acct, pw, currency, balance.toString());
 
-        return "done";
+        //reply with "Done"
+
+        return payload;
+    }
+
+    public static String monitorUpdate() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
+    }
+
+    public static String currencyExch() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+        askCurrencyConverter();
+
+        System.out.printf("%s, %s, %s\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
+    }
+
+    public static String checkBankAcc() {
+        String name = askName();
+        String acct = askAccountNumber();
+        String pw = askPassword(false);
+
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
+        String payload = String.join("_", name, acct, pw);
+
+        return payload;
     }
 
     public static String askName() {
@@ -155,6 +197,118 @@ public class BankInterface {
 
         return currencies[int_option];
     }
+
+    public static String askCurrencyConverter() {
+            double SGD, USD, EUR;
+            DecimalFormat f = new DecimalFormat("##.##");
+
+            String[] currencies = new String[] {
+                "SGD", "USD", "EUR"
+            };
+            
+            //Ask for what the currency is in
+            String choice = askCurrencyType();
+            int i = -1;
+            int int_choice = -1;
+            for (i = 0; i < currencies.length; i++) {
+                if (currencies[i].equals(choice)) {
+                    int_choice = i;
+                }
+            }
+
+            //Convert currency into
+            System.out.println("Please select a currency type to convert to: ");
+            for (i = 0; i < currencies.length; i++) {
+                System.out.printf("%d. %s\n", i+1, currencies[i]);
+            }
+
+            String option = sc.next();
+            int int_option = -1;
+
+            try {
+                int_option = Integer.parseInt(option) - 1;
+            } catch (Exception e) {
+                option = option.toUpperCase();
+                for (i = 0; i < currencies.length; i++) {
+                    if (currencies[i].equals(option)) {
+                        int_option = i;
+                    }
+                }
+            }
+
+            if (int_option < 0 || int_option >= currencies.length) {
+                System.out.println("Invalid option");
+                return askCurrencyConverter();
+            }
+
+            //Input amount to convert to
+
+            System.out.printf("Enter the amount you want to convert?");
+            Double amount = sc.nextDouble();
+
+            switch (int_choice)
+            {
+                case 1:  // SGD Conversion
+
+                if (int_option == 1){
+                    SGD = amount;
+                    System.out.println(amount + " SGD = " + f.format(SGD) + " USD");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                else if (int_option == 2){
+                    USD = amount * 0.73644;
+                    System.out.println(amount + " SGD = " + f.format(USD) + " USD");
+                }
+                else if (int_option == 3){
+                    EUR = amount * 0.67031;
+                    System.out.println(amount + " SGD = " + f.format(EUR) + " EUR");
+                }
+
+                break;
+
+                case 2:  // USD Conversion
+
+                if (int_option == 1){
+                    SGD = amount * 0.13578;
+                    System.out.println(amount + " USD = " + f.format(SGD) + " SGD");
+
+                }
+                else if (int_option == 2){
+                    USD = amount;
+                    System.out.println(amount + " SGD = " + f.format(USD) + " USD");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                else if (int_option == 3){
+                    EUR = amount * 0.91012;
+                    System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
+                }
+                break;
+
+                case 3:  // EUR Conversion
+
+                if (int_option == 1){
+                    SGD = amount * 0.14920;
+                    System.out.println(amount + " EUR = " + f.format(SGD) + " SGD");
+
+                }
+                else if (int_option == 2){
+                    USD = amount * 0.10987;
+                    System.out.println(amount + " EUR = " + f.format(USD) + " USD");
+
+                }
+                else if (int_option == 3){
+                    EUR = amount;
+                    System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                break;
+
+                //Default case
+                default:
+                System.out.println("Invalid Input");
+        }
+        return currencies[int_option];
+    }   
 
     public static Double askInitialBalance() {
         System.out.println("Please enter initial account balance: ");
