@@ -3,15 +3,17 @@ package src.Server;
 public class Account {
     private int accountNumber;
     private String name;
-    private int pw;
+    private String pw;
     private double balance;
+    private String currency;
 
     public Account(){};
-    public Account(int accountNumber, String name, int pw, double balance){ 
+    public Account(int accountNumber, String name, String pw, double balance, String currency){ 
         this.accountNumber = accountNumber;
         this.name = name;
         this.pw = pw;
         this.balance = balance;
+        this.currency = currency;
     }
 
 
@@ -31,12 +33,12 @@ public class Account {
         this.name = name;
     }
 
-    public int getPin(){
+    public String getPassword(){
         return pw;
     }
 
-    public void setPin(int pin){
-        this.pw = pin;
+    public void setPassword(String pw){
+        this.pw = pw;
     }
 
     public double getBalance(){
@@ -50,4 +52,12 @@ public class Account {
     public void modifyBalance(double amount){
         this.balance += amount;
     }
+
+    public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 }
