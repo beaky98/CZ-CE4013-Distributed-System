@@ -57,10 +57,10 @@ public class BankInterface {
                 request = monitorUpdate();
                 break;
             case 6:
-                request = currencyExch();  
+                request = checkBankAcc();  
                 break;
             case 7:
-                request = nonIdemTrans();
+                request = currencyExch();
                 break;
             case 0:
                 request = "0";
@@ -133,12 +133,12 @@ public class BankInterface {
         return payload;
     }
 
-    public static String nonIdemTrans() {
+    public static String checkBankAcc() {
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("%s, %s, %s\n", name, acct, pw);
+        System.out.printf("%s, %s, %s, %.2f\n", name, acct, pw);
         String payload = String.join("_", name, acct, pw);
 
         return payload;
@@ -198,71 +198,117 @@ public class BankInterface {
         return currencies[int_option];
     }
 
-    public static void askCurrencyConverter() {
-        double SGD, USD, EUR;
-        DecimalFormat f = new DecimalFormat("##.##");
-        String[] currencies = new String[] {
-            "SGD", "USD", "EUR"
-        };
-        System.out.println("Please select a currency type to convert from: ");
-        for (int i = 0; i < currencies.length; i++) {
-            System.out.printf("%d. %s\n", i+1, currencies[i]);
-        }
+    public static String askCurrencyConverter() {
+            double SGD, USD, EUR;
+            DecimalFormat f = new DecimalFormat("##.##");
 
-        String option = sc.next();
-        int int_option = -1;
-
-        try {
-            int_option = Integer.parseInt(option) - 1;
-        } catch (Exception e) {
-            option = option.toUpperCase();
-            for (int i = 0; i < currencies.length; i++) {
-                if (currencies[i].equals(option)) {
-                    int_option = i;
+            String[] currencies = new String[] {
+                "SGD", "USD", "EUR"
+            };
+            
+            //Ask for what the currency is in
+            String choice = askCurrencyType();
+            int i = -1;
+            int int_choice = -1;
+            for (i = 0; i < currencies.length; i++) {
+                if (currencies[i].equals(choice)) {
+                    int_choice = i;
                 }
             }
+
+            //Convert currency into
+            System.out.println("Please select a currency type to convert to: ");
+            for (i = 0; i < currencies.length; i++) {
+                System.out.printf("%d. %s\n", i+1, currencies[i]);
+            }
+
+            String option = sc.next();
+            int int_option = -1;
+
+            try {
+                int_option = Integer.parseInt(option) - 1;
+            } catch (Exception e) {
+                option = option.toUpperCase();
+                for (i = 0; i < currencies.length; i++) {
+                    if (currencies[i].equals(option)) {
+                        int_option = i;
+                    }
+                }
+            }
+
+            if (int_option < 0 || int_option >= currencies.length) {
+                System.out.println("Invalid option");
+                return askCurrencyConverter();
+            }
+
+            //Input amount to convert to
+
+            System.out.printf("Enter the amount you want to convert?");
+            Double amount = sc.nextDouble();
+
+            switch (int_choice)
+            {
+                case 1:  // SGD Conversion
+
+                if (int_option == 1){
+                    SGD = amount;
+                    System.out.println(amount + " SGD = " + f.format(SGD) + " USD");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                else if (int_option == 2){
+                    USD = amount * 0.73644;
+                    System.out.println(amount + " SGD = " + f.format(USD) + " USD");
+                }
+                else if (int_option == 3){
+                    EUR = amount * 0.67031;
+                    System.out.println(amount + " SGD = " + f.format(EUR) + " EUR");
+                }
+
+                break;
+
+                case 2:  // USD Conversion
+
+                if (int_option == 1){
+                    SGD = amount * 0.13578;
+                    System.out.println(amount + " USD = " + f.format(SGD) + " SGD");
+
+                }
+                else if (int_option == 2){
+                    USD = amount;
+                    System.out.println(amount + " SGD = " + f.format(USD) + " USD");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                else if (int_option == 3){
+                    EUR = amount * 0.91012;
+                    System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
+                }
+                break;
+
+                case 3:  // EUR Conversion
+
+                if (int_option == 1){
+                    SGD = amount * 0.14920;
+                    System.out.println(amount + " EUR = " + f.format(SGD) + " SGD");
+
+                }
+                else if (int_option == 2){
+                    USD = amount * 0.10987;
+                    System.out.println(amount + " EUR = " + f.format(USD) + " USD");
+
+                }
+                else if (int_option == 3){
+                    EUR = amount;
+                    System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
+                    System.out.printf("You did not convert any currency. Please try again.");
+                }
+                break;
+
+                //Default case
+                default:
+                System.out.println("Invalid Input");
         }
-
-        if (int_option < 0 || int_option >= currencies.length) {
-            System.out.println("Invalid option");
-            askCurrencyConverter();
-        }
-
-        System.out.printf("Enter the amount you want to convert?");
-        Double amount = sc.nextDouble();
-
-        switch (int_option)
-      {
-         case 1:  // SGD Conversion
-            USD = amount * 0.73644;
-            System.out.println(amount + " SGD = " + f.format(USD) + " USD");
- 
-            EUR = amount * 0.67031;
-            System.out.println(amount + " SGD = " + f.format(EUR) + " EUR");
- 
-            break;
- 
-         case 2:  // USD Conversion
-            SGD = amount * 0.13578;
-            System.out.println(amount + " USD = " + f.format(SGD) + " SGD");
-
-            EUR = amount * 0.91012;
-            System.out.println(amount + " USD = " + f.format(EUR) + " EUR");
-            break;
- 
-         case 3:  // EUR Conversion
-            SGD = amount * 0.14920;
-            System.out.println(amount + " EUR = " + f.format(SGD) + " SGD");
-
-            USD = amount * 0.10987;
-            System.out.println(amount + " EUR = " + f.format(USD) + " USD");
-            break;
- 
-          //Default case
-         default:
-            System.out.println("Invalid Input");
-    }
-}
+        return currencies[int_option];
+    }   
 
     public static Double askInitialBalance() {
         System.out.println("Please enter initial account balance: ");

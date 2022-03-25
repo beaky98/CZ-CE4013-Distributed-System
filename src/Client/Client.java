@@ -1,8 +1,5 @@
 package src.Client;
 
-//TO BE MERGED WITH UDPCLIENT?
-
-
 // Java program to illustrate Client side
 // Implementation using DatagramSocket
 import java.io.IOException;
