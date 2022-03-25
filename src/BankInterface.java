@@ -60,7 +60,7 @@ public class BankInterface {
                 request = checkBankBalance();  
                 break;
             case 7:
-                request = transferMoney();
+                request = transferMoney(false);
                 break;
             case 0:
                 request = "0";
@@ -78,7 +78,7 @@ public class BankInterface {
         String currency = askCurrencyType();
         Double balance = askInitialBalance();
 
-        System.out.printf("%s, %s, %s, %.2f\n", name, pw, currency, balance);
+        System.out.printf("Your name is %s\nPassword: %s\nDepositing in %s\nWith the amount of %.2f\n", name, pw, currency, balance);
         String payload = String.join("_", option, name, pw, currency, balance.toString());
 
         return payload;
@@ -90,7 +90,7 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("%s, %s, %s\n", name, acct, pw);
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n"), name, acct, pw);
         String payload = String.join("_", option, name, acct, pw);
 
         return payload;
@@ -98,14 +98,15 @@ public class BankInterface {
 
     public static String transfer(boolean deposit) {
         
+        String option = deposit ? "3" : "4";
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
         String currency = askCurrencyType();
         Double balance = askTransferAmount(deposit);
-        String option = deposit ? "3" : "4";
+        String process = deposit ? "Depositing" : "Withdrawing";
 
-        System.out.printf("%s, %s, %s, %s, %.2f\n", name, acct, pw, currency, balance);
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n%s: %s %.2f\n", name, acct, pw, process, currency, balance);
         String payload = String.join("_", option, name, acct, pw, currency, balance.toString());
 
         //reply with "Done"
@@ -117,7 +118,7 @@ public class BankInterface {
         String option = "5";
         String interval = askMonitorInterval();
 
-        System.out.printf("%s\n", interval);
+        System.out.printf("Setting Monitor Interval(min): %s\n", interval);
         String payload = String.join("_", option, interval);
 
         return payload;
@@ -129,23 +130,23 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("%s, %s, %s\n", name, acct, pw);
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n", name, acct, pw);
         String payload = String.join("_",option, name, acct, pw);
 
         return payload;
     }
 
-    public static String currencyExch() {
+    public static String transferMoney(boolean deposit) {
         String option = "7";
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
         String currency = askCurrencyType();
-        Double balance = askTransferAmount(deposit);
-        String option = deposit ? "3" : "4";
+        String acctTo = askAccountNumberTo();
+        Double balance = askTransferAmount(false);
 
-        System.out.printf("%s, %s, %s, %s, %.2f\n", name, acct, pw, currency, balance);
-        String payload = String.join("_", option, name, acct, pw, currency, balance.toString());
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\nTransfering: %s %.2f\nTo Account Number: %s\n", name, acct, pw, currency, balance, acctTo);
+        String payload = String.join("_", option, name, acct, pw, currency, balance.toString(), acctTo);
 
         //reply with "Done"
 
@@ -214,15 +215,22 @@ public class BankInterface {
     }
 
     public static String askMonitorInterval() {
+        System.out.print("Please enter the monitor interval (min): ");
+        String interval = sc.next();
+
+        return interval;
+    }
+
+
+    public static String askAccountNumber() {
         System.out.print("Please enter your account number: ");
         String acct = sc.next();
 
         return acct;
     }
 
-
-    public static String askAccountNumber() {
-        System.out.print("Please enter your account number: ");
+    public static String askAccountNumberTo() {
+        System.out.print("Please enter the account number you are transferring to: ");
         String acct = sc.next();
 
         return acct;
