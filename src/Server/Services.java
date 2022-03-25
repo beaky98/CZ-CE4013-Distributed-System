@@ -66,10 +66,10 @@ public class Services {
 				response = String.format("Withdrawal for account number %d successful\n Balance is %.2f %s", accNum, temp.getBalance(), temp.getCurrency());
 			}		
 			else {
-				response = "Insuffient Balance. Current balance: " + temp.getBalance();
+				response = String.format("Insuffient Balance. Current balance: %.2f", temp.getBalance());
 			}
         }        
-        else response = "Invalid choice, try again.";
+        else response = String.format("Invalid choice, try again.");
 
 
         return response;
@@ -83,7 +83,7 @@ public class Services {
         Account temp = accountdb.get(accNum);
 
         if(temp == null){
-            response = "Account does not exist"; 
+            response = String.format("Account does not exist"); 
         }
         else{
             if(temp.getPassword() == pw){
@@ -105,7 +105,7 @@ public class Services {
         else{
             if(temp.getPassword() == pw){
                 accountdb.remove(accNum);
-                response = String.format("Account " + accNum + " successfully removed.");
+                response = String.format("Account %d successfully removed.", accNum);
             }
             else{
                 response = String.format("Incorrect password, please try again.");
@@ -144,7 +144,7 @@ public class Services {
                 response = String.format("Successful transfer \n Your balance is now %.2f %s", sender.getBalance(), sender.getCurrency());
             }
             else{
-                response = String.format("Insufficient funds,  your balance is %.2f %s", sender.getBalance(), sender.getCurrency());
+                response = String.format("Insufficient funds, your balance is %.2f %s", sender.getBalance(), sender.getCurrency());
             }
         }
         return response;
