@@ -6,19 +6,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Services {
     public static HashMap<Integer, Account> accountdb;
+
     public Services(){
         accountdb = new HashMap<>();
     }
 
 
 
-    public static String createAccount(String name, String pw, String currency, double balance){
+    public String createAccount(String name, String pw, String currency, double balance){
         int accNum = -1;
 		int min = 1000;
 		int max = 9999;
 		do{
 			accNum = ThreadLocalRandom.current().nextInt(min, max);
-		}while(accountdb.get(accNum)!=null);
+		} while(accountdb.get(accNum)!=null);
 
         String response = "";
         Account newAcc = new Account();
@@ -35,7 +36,7 @@ public class Services {
         return response;
     }
 
-    public static String updateBalance(String name, int accNum, String password, int choice, String currency, double amount){
+    public String updateBalance(String name, int accNum, String password, int choice, String currency, double amount){
         String response = "";
 
         //Check if account number exists in database
@@ -43,7 +44,7 @@ public class Services {
             response = String.format("Account does not exist");
         }
         //Check if pin is correct
-        if(accountdb.get(accNum).getPassword() != password){
+        if(!accountdb.get(accNum).getPassword().equals(password)){
             response = String.format("Incorrect password, please try again");
         }
 
@@ -78,7 +79,7 @@ public class Services {
     }
 
 
-    public static String checkBalance(String name, int accNum, String pw){
+    public String checkBalance(String name, int accNum, String pw){
         String response = "";
 
         Account temp = accountdb.get(accNum);
@@ -87,10 +88,11 @@ public class Services {
             response = String.format("Account does not exist"); 
         }
         else{
-            if(temp.getName() != name){
+            if(!temp.getName().equals(name)){
+                System.out.println(temp.getName() + " " + name);
                 response = String.format("The acccount holder is not linked to this account.");
             }
-            else if(temp.getPassword() == pw){
+            else if(temp.getPassword().equals(pw)){
                 response = String.format("Your balance is %.2f %s", temp.getBalance(), temp.getCurrency());
             }
             else{
@@ -100,17 +102,17 @@ public class Services {
         return response;
     }
 
-    public static String closeAccount(String name, int accNum, String pw){
+    public String closeAccount(String name, int accNum, String pw){
         String response = "";
         Account temp = accountdb.get(accNum);
         if(temp == null){
             response = String.format("Unable to close account, account does not exist.");  
         }
         else{
-            if(temp.getName() != name){
+            if(!temp.getName().equals(name)){
                 response = String.format("The acccount holder is not linked to this account.");
             }
-            else if(temp.getPassword() == pw){
+            else if(temp.getPassword().equals(pw)){
                 accountdb.remove(accNum);
                 response = String.format("Account %d successfully removed.", accNum);
             }
@@ -121,7 +123,7 @@ public class Services {
         return response;
     }
 
-    public static String transferBalance(String name, int accNum, String pw, String currency, double amount, int rec){
+    public String transferBalance(String name, int accNum, String pw, String currency, double amount, int rec){
         String response = "";
         
         Account sender, receiver;
@@ -141,7 +143,7 @@ public class Services {
             sender = accountdb.get(accNum);
             receiver = accountdb.get(rec);
 
-            if(sender.getPassword() != pw){
+            if(!sender.getPassword().equals(pw)){
                 response = String.format("Incorrect password, please try again.");
             }
 
@@ -155,5 +157,9 @@ public class Services {
             }
         }
         return response;
+    }
+
+    public String monitorUpdate() {
+        return "PLACEHOLDER";
     }
 }

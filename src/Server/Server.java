@@ -28,12 +28,17 @@ public class Server implements Callable<Integer> {
 	private DatagramSocket ds;
 	private HashMap<String, String> reqList;
 
+	private Services bankService;
+
 	public Integer call() throws Exception {
 		// Create socket
 		ds = new DatagramSocket(server_port);
 
 		// Store request id / response pairs
 		reqList = new HashMap<String, String>();
+
+		// Bank service
+		bankService = new Services();
 
 		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
 		System.out.printf("Using invocation semantic: %s...\n", at_most_once ? "at-most-once": "at-least-once");
@@ -59,38 +64,39 @@ public class Server implements Callable<Integer> {
 			int port = packet.getPort();
 
 			// Exit the server if the client sends "bye"
-			if (reqArr[0].equals("0")) {
+			if (reqArr[1].equals("-1")) {
 				System.out.println("Client sent bye.....EXITING");
 				break;
 			}
+
 			// New request
 			if (res == null) {
 
 				String response = "";
-				switch (Integer.parseInt(reqArr[0])) { 				// Unmarshal request to get request type
+				switch (Integer.parseInt(reqArr[1])) { 				// Unmarshal request to get request type
 					case 1:
-						response = createAccount(reqArr[1], reqArr[2], reqArr[3], Double.parseDouble(reqArr[4]));
+						response = bankService.createAccount(reqArr[2], reqArr[3], reqArr[4], Double.parseDouble(reqArr[5]));
 						break;
 					case 2:
-						response = closeAccount(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3]);
+						response = bankService.closeAccount(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4]);
 						break;
 					case 3:
-						response= updateBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], 0, reqArr[4], Double.parseDouble(reqArr[5]));
+						response= bankService.updateBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], 0, reqArr[5], Double.parseDouble(reqArr[6]));
 						break;
 					case 4:
-						response = updateBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], 1, reqArr[4], Double.parseDouble(reqArr[5]));
+						response = bankService.updateBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], 1, reqArr[5], Double.parseDouble(reqArr[6]));
 						break;
 					case 5:
-						response = monitorUpdate(); //this one not done
+						response = bankService.monitorUpdate(); //this one not done
 						break;
 					case 6:
-						response = checkBalance(Integer.parseInt(reqArr[2]), reqArr[3]);  
+						response = bankService.checkBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4]);  
 						break;
 					case 7:
-						response = transferBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], reqArr[4], Double.parseDouble(reqArr[5]), Integer.parseInt(reqArr[6]));
+						response = bankService.transferBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], reqArr[5], Double.parseDouble(reqArr[6]), Integer.parseInt(reqArr[7]));
 						break;
 					default:
-						System.out.println("Option not found");
+						response = "Option not found";
 				}
 
 

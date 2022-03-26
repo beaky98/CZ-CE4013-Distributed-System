@@ -1,6 +1,5 @@
-package src;
+package src.Client;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class BankInterface {
@@ -11,15 +10,17 @@ public class BankInterface {
 
     public static String printOptions() {
         sc.useDelimiter(System.lineSeparator());
-        System.out.println("Welcome to Distributed Banking Pte Ltd, how may I help you?");
-        System.out.println("1. Create account");
-        System.out.println("2. Close account");
-        System.out.println("3. Deposit money");
-        System.out.println("4. Withdraw money");
-        System.out.println("5. Monitor updates");
-        System.out.println("6. Check Balance"); //idempotent
-        System.out.println("7. Transfer"); //non-idempotent
-        System.out.println("0. Exit application");
+        System.out.println("+-------------------------------------------------------------+");
+        System.out.println("| Welcome to Distributed Banking Pte Ltd, how may I help you? |");
+        System.out.println("| 1. Create account                                           |");
+        System.out.println("| 2. Close account                                            |");
+        System.out.println("| 3. Deposit money                                            |");
+        System.out.println("| 4. Withdraw money                                           |");
+        System.out.println("| 5. Monitor updates                                          |");
+        System.out.println("| 6. Check Balance                                            |"); //idempotent
+        System.out.println("| 7. Transfer                                                 |"); //non-idempotent
+        System.out.println("| 0. Exit application                                         |");
+        System.out.println("+-------------------------------------------------------------+");
         
         String option = "";
         try {
@@ -61,8 +62,8 @@ public class BankInterface {
             case 7:
                 request = transferMoney();
                 break;
-            case 0:
-                request = String.join("_","0","0");
+            case 0: // Client exits interface
+                request = "0";
                 break;
             default:
                 System.out.println("No such option");

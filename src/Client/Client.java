@@ -13,6 +13,7 @@ public class Client {
 	private InetAddress ip;
 	private int port;
 	private String clientId;
+	private int clientPort;
 	private int reqCount;
 
 	/**
@@ -34,6 +35,7 @@ public class Client {
 		// this.ds.connect(this.ip, this.port);
 
 		this.clientId = InetAddress.getLocalHost().getHostAddress();
+		this.clientPort = this.ds.getLocalPort();
 		this.reqCount = 0;
 	}
 
@@ -44,7 +46,7 @@ public class Client {
 	 */
 	public String getReqId() {
 		this.reqCount += 1;
-		return this.clientId + "|" + this.reqCount;
+		return String.format("%s:%d|%d", this.clientId, this.clientPort, this.reqCount);
 	}
 
 	/**
