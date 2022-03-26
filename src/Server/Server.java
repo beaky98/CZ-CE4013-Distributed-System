@@ -94,7 +94,7 @@ public class Server implements Callable<Integer> {
 						response = bankService.checkBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4]);  
 						break;
 					case 7:
-						response = bankService.transferBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], reqArr[5], Double.parseDouble(reqArr[6]), Integer.parseInt(reqArr[7]));
+						response = bankService.transferBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], Double.parseDouble(reqArr[5]), Integer.parseInt(reqArr[6]));
 						break;
 					default:
 						response = "Option not found";

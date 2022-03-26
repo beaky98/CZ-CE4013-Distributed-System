@@ -141,12 +141,11 @@ public class BankInterface {
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
-        String currency = askCurrencyType();
         String acctTo = askAccountNumberTo();
         Double balance = askTransferAmount(false);
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\nTransfering: %s %.2f\nTo Account Number: %s\n", name, acct, pw, currency, balance, acctTo);
-        String payload = String.join("_", option, name, acct, pw, currency, balance.toString(), acctTo);
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\nTransfering: %.2f dollars\nTo Account Number: %s\n", name, acct, pw, balance, acctTo);
+        String payload = String.join("_", option, name, acct, pw, balance.toString(), acctTo);
 
         //reply with "Done"
 
