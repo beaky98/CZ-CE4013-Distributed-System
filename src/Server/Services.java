@@ -12,7 +12,7 @@ public class Services {
 
 
 
-    public static String createAccount(String name, String pw, double balance){
+    public static String createAccount(String name, String pw, String currency, double balance){
         int accNum = -1;
 		int min = 1000;
 		int max = 9999;
@@ -27,6 +27,7 @@ public class Services {
         newAcc.setName(name);
         newAcc.setPassword(pw);
         newAcc.setBalance(balance);
+        newAcc.setCurrency(currency);
         accountdb.put(accNum,newAcc);
 
         response = String.format("Account created, your account number is: %d", accNum);
@@ -77,7 +78,7 @@ public class Services {
     }
 
 
-    public static String checkBalance(int accNum, String pw){
+    public static String checkBalance(String name, int accNum, String pw){
         String response = "";
 
         Account temp = accountdb.get(accNum);
@@ -86,7 +87,10 @@ public class Services {
             response = String.format("Account does not exist"); 
         }
         else{
-            if(temp.getPassword() == pw){
+            if(temp.getName() != name){
+                response = String.format("The acccount holder is not linked to this account.");
+            }
+            else if(temp.getPassword() == pw){
                 response = String.format("Your balance is %.2f %s", temp.getBalance(), temp.getCurrency());
             }
             else{
@@ -103,7 +107,10 @@ public class Services {
             response = String.format("Unable to close account, account does not exist.");  
         }
         else{
-            if(temp.getPassword() == pw){
+            if(temp.getName() != name){
+                response = String.format("The acccount holder is not linked to this account.");
+            }
+            else if(temp.getPassword() == pw){
                 accountdb.remove(accNum);
                 response = String.format("Account %d successfully removed.", accNum);
             }
@@ -141,7 +148,7 @@ public class Services {
             else if(sender.getBalance() >= amount){
                 sender.setBalance(sender.getBalance() - amount);
                 receiver.setBalance(receiver.getBalance() + amount);
-                response = String.format("Successful transfer \n Your balance is now %.2f %s", sender.getBalance(), sender.getCurrency());
+                response = String.format("Successful transfer to %s. Your balance is %.2f %s", receiver.getName(), sender.getBalance(), sender.getCurrency());
             }
             else{
                 response = String.format("Insufficient funds, your balance is %.2f %s", sender.getBalance(), sender.getCurrency());
