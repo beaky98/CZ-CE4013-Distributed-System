@@ -35,7 +35,7 @@ public class Services {
         return response;
     }
 
-    public static String updateBalance(String name, int accNum, String password, int choice, double amount){
+    public static String updateBalance(String name, int accNum, String password, int choice, String currency, double amount){
         String response = "";
 
         //Check if account number exists in database
@@ -121,7 +121,7 @@ public class Services {
         return response;
     }
 
-    public static String transferBalance(String name, int accNum, int rec, String pw, double amount){
+    public static String transferBalance(String name, int accNum, String pw, String currency, double amount, int rec){
         String response = "";
         
         Account sender, receiver;
