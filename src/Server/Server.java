@@ -11,7 +11,6 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 import picocli.CommandLine.*;
-import src.Server.*;
 
 @Command(name = "server", description = "Does cool stuff.", mixinStandardHelpOptions = true)
 public class Server implements Callable<Integer> {
