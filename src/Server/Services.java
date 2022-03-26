@@ -76,10 +76,12 @@ public class Services {
         // Check if account number exists in database
         if (accountdb.get(accNum) == null) {
             response = String.format("Account does not exist\n");
+            return response;
         }
         // Check if pin is correct
         if (!accountdb.get(accNum).getPassword().equals(password)) {
             response = String.format("Incorrect password, please try again\n");
+            return response;
         }
 
         if (choice == 0) {
@@ -123,6 +125,7 @@ public class Services {
 
         if (temp == null) {
             response = String.format("Account does not exist\n");
+            return response;
         } else {
             if (!temp.getName().equals(name)) {
                 System.out.println(temp.getName() + " " + name);
@@ -142,6 +145,7 @@ public class Services {
         Account temp = accountdb.get(accNum);
         if (temp == null) {
             response = String.format("Unable to close account, account does not exist.\n");
+            return response;
         } else {
             if (!temp.getName().equals(name)) {
                 response = String.format("The acccount holder is not linked to this account.\n");
@@ -165,17 +169,21 @@ public class Services {
         if (accountdb.get(accNum) == null) {
             if (accountdb.get(rec) == null) {
                 response = String.format("Sender and Receiver account numbers, %d and %d, do not exist\n", accNum, rec);
+                return response;
             } else {
                 response = String.format("Sender's account number %d does not exist\n", accNum);
+                return response;
             }
         } else if (accountdb.get(rec) == null) {
             response = String.format("Receiver's account number %d does not exist\n", accNum);
+            return response;
         } else {
             sender = accountdb.get(accNum);
             receiver = accountdb.get(rec);
 
             if (!sender.getPassword().equals(pw)) {
                 response = String.format("Incorrect password, please try again.\n");
+                return response;
             }
             else{
                 double conv_amount = conversion(sender.getCurrency(), receiver.getCurrency(), amount);
