@@ -38,7 +38,8 @@ public class Server implements Callable<Integer> {
 		reqList = new HashMap<String, String>();
 
 		// Bank service
-		bankService = new Services();
+		CallbackHandler handler = new CallbackHandler();
+		bankService = new Services(handler);
 
 		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
 		System.out.printf("Using invocation semantic: %s...\n", at_most_once ? "at-most-once": "at-least-once");
@@ -52,8 +53,8 @@ public class Server implements Callable<Integer> {
 
 			//Unmarshal request to get request id
 			String[] reqArr = req.split("_");
-			for (int i=0; i<reqArr.length; i++)
-				System.out.println(reqArr[i]);
+			// for (int i=0; i<reqArr.length; i++)
+			// 	System.out.println(reqArr[i]);
 			String reqId = reqArr[0];
 
 			// Checks if request has been sent before
@@ -87,7 +88,7 @@ public class Server implements Callable<Integer> {
 						response = bankService.updateBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], 1, reqArr[5], Double.parseDouble(reqArr[6]));
 						break;
 					case 5:
-						response = bankService.monitorUpdate(); //this one not done
+						response = bankService.monitorUpdate(ip.getHostAddress(), port, Integer.parseInt(reqArr[2])); //this one not done
 						break;
 					case 6:
 						response = bankService.checkBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4]);  
@@ -175,6 +176,12 @@ public class Server implements Callable<Integer> {
 	private void storeRes(String reqId, String response) {
 		if (at_most_once)
 			reqList.put(reqId, response);
+	}
+	
+	public class CallbackHandler implements Callback {
+		public void sendMessage(String msg, String ip, int port) throws IOException {
+			send(msg, InetAddress.getByName(ip), port);
+		}
 	}
 
 	public static void main(String[] args) {

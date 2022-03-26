@@ -76,6 +76,35 @@ public class Client {
 		return received;
 	}
 
+	public void receiveAll(int duration) {
+		final Thread thisThread = Thread.currentThread();
+		final int timeToRun = duration * 60000; // time in millis
+
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					Thread.sleep(timeToRun);
+					thisThread.interrupt();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+
+		while (!Thread.interrupted()) {
+			// do something interesting.
+			try {
+				System.out.println("[UPDATE]: " + receive());
+			} catch (SocketTimeoutException e) {
+				// This is okay
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Monitoring has expired");
+	}
+
 	/**
 	 * Sends a message to server, and waits for a response
 	 * If no there is no response before the timeout, null string will be returned

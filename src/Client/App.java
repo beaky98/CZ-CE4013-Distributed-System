@@ -49,6 +49,14 @@ public class App implements Callable<Integer> {
                 } else {
                     System.out.println("No response received");
                 }
+
+                // Special case for monitorUpdate:
+                // Stops the program and just waits for any updates
+                if (payload.charAt(0) == '5') {
+                    int duration = Integer.parseInt(payload.split("_")[1]);
+                    client.receiveAll(duration);
+                }
+
             }
             sc.close();
         } catch (Exception e) {

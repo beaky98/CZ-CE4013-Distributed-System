@@ -116,10 +116,10 @@ public class BankInterface {
 
     public static String monitorUpdate() {
         String option = "5";
-        String interval = askMonitorInterval();
+        Integer interval = askMonitorInterval();
 
-        System.out.printf("Setting Monitor Interval(min): %s\n", interval);
-        String payload = String.join("_", option, interval);
+        System.out.printf("Setting Monitor Interval(min): %d\n", interval);
+        String payload = String.join("_", option, interval.toString());
 
         return payload;
     }
@@ -131,7 +131,7 @@ public class BankInterface {
         String pw = askPassword(false);
 
         System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n", name, acct, pw);
-        String payload = String.join("_",option, name, acct, pw);
+        String payload = String.join("_", option, name, acct, pw);
 
         return payload;
     }
@@ -214,9 +214,9 @@ public class BankInterface {
         return balance;
     }
 
-    public static String askMonitorInterval() {
+    public static Integer askMonitorInterval() {
         System.out.print("Please enter the monitor interval (min): ");
-        String interval = sc.next();
+        int interval = sc.nextInt();
 
         return interval;
     }

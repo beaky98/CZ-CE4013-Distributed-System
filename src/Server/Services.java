@@ -1,14 +1,23 @@
 package src.Server;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 
 public class Services {
     public static HashMap<Integer, Account> accountdb;
 
-    public Services(){
+    public static HashMap<String, Long> clientdb;
+    public static Callback cb;
+
+    public Services(Callback obj){
         accountdb = new HashMap<>();
+        clientdb = new HashMap<>();
+        cb = obj;
     }
 
 
@@ -33,6 +42,8 @@ public class Services {
 
         response = String.format("Account created, your account number is: %d", accNum);
         
+        sendUpdate(String.format("Account %d has been created", accNum));
+
         return response;
     }
 
@@ -56,6 +67,8 @@ public class Services {
 			temp.setBalance(temp.getBalance() + amount);
 
             response = String.format("Deposit for account number %d successful\n Balance is %.2f %s", accNum, temp.getBalance(), temp.getCurrency());
+            
+            sendUpdate(String.format("Balance of %d has been updated", accNum));
         }
         
         else if(choice == 1){
@@ -66,6 +79,8 @@ public class Services {
             if(temp.getBalance() >= amount){
 				temp.setBalance(temp.getBalance() - amount);
 				response = String.format("Withdrawal for account number %d successful\n Balance is %.2f %s", accNum, temp.getBalance(), temp.getCurrency());
+                
+                sendUpdate(String.format("Balance of %d has been updated", accNum));
 			}		
 			else {
 				response = String.format("Insuffient Balance. Current balance: %.2f", temp.getBalance());
@@ -99,6 +114,7 @@ public class Services {
                 response = String.format("Incorrect password, please try again.");
             }
         }
+
         return response;
     }
 
@@ -115,11 +131,13 @@ public class Services {
             else if(temp.getPassword().equals(pw)){
                 accountdb.remove(accNum);
                 response = String.format("Account %d successfully removed.", accNum);
+                sendUpdate(String.format("Account %d has been deleted", accNum));
             }
             else{
                 response = String.format("Incorrect password, please try again.");
             }
         }
+
         return response;
     }
 
@@ -159,7 +177,41 @@ public class Services {
         return response;
     }
 
-    public String monitorUpdate() {
-        return "PLACEHOLDER";
+    public String monitorUpdate(String ip, int port, int duration) {
+
+        long timestamp = Instant.now().getEpochSecond();
+        timestamp += TimeUnit.MINUTES.toMillis(duration);
+        clientdb.put(String.format("%s:%d", ip, port), timestamp);
+        return "Registered client to updates list";
+    }
+
+    private void sendUpdate(String msg) {
+        Iterator<String> iter = clientdb.keySet().iterator();
+        
+        while (iter.hasNext()) {
+            String key = iter.next();
+            System.out.println(key);
+
+            // Checks if the update is still valid
+            long timestamp = Instant.now().getEpochSecond();
+            if (clientdb.get(key) < timestamp) {
+                iter.remove();
+            }
+            else {
+                String[] arr = key.split(":");
+                String ip = arr[0];
+                System.out.println(ip);
+
+                int port = Integer.parseInt(arr[1]);
+                System.out.println(port);
+
+                try {
+                    cb.sendMessage(msg, ip, port);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
