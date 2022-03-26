@@ -22,8 +22,8 @@ public class Server implements Callable<Integer> {
     @Option(names = "--loss", description = "percentage of packet loss")
 	double loss_rate = 0.2;
 	
-    @Option(names = "--once", description = "at-most-once invocation semantic")
-	boolean at_most_once = false;
+    @Option(names = "--once", description = "at-least-once invocation semantic")
+	boolean at_least_once = false;
 	
 	private DatagramSocket ds;
 	private HashMap<String, String> reqList;
@@ -42,7 +42,7 @@ public class Server implements Callable<Integer> {
 		bankService = new Services(handler);
 
 		System.out.printf("Running server on port %s with loss rate of %.3f...\n", server_port, loss_rate);
-		System.out.printf("Using invocation semantic: %s...\n", at_most_once ? "at-most-once": "at-least-once");
+		System.out.printf("Using invocation semantic: %s...\n", at_least_once ? "at-least-once": "at-most-once");
 
 		while (true) {
 			// Create and receive packet
@@ -160,7 +160,7 @@ public class Server implements Callable<Integer> {
 	 * @return Response
 	 */
 	private String checkReqId(String reqId) {
-		if (at_most_once && reqList.containsKey(reqId)) {
+		if (!at_least_once && reqList.containsKey(reqId)) {
 			System.out.println("Retrieving stored response");
 			return reqList.get(reqId);
 		}
@@ -174,7 +174,7 @@ public class Server implements Callable<Integer> {
 	 * @param response Response
 	 */
 	private void storeRes(String reqId, String response) {
-		if (at_most_once)
+		if (!at_least_once)
 			reqList.put(reqId, response);
 	}
 	
