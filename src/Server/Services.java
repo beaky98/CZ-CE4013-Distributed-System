@@ -40,7 +40,7 @@ public class Services {
         newAcc.setCurrency(currency);
         accountdb.put(accNum, newAcc);
 
-        response = String.format("Account created, your account number is: %d", accNum);
+        response = String.format("Account created, your account number is: %d\n", accNum);
 
         sendUpdate(String.format("Account %d has been created", accNum));
 
@@ -75,11 +75,11 @@ public class Services {
 
         // Check if account number exists in database
         if (accountdb.get(accNum) == null) {
-            response = String.format("Account does not exist");
+            response = String.format("Account does not exist\n");
         }
         // Check if pin is correct
         if (!accountdb.get(accNum).getPassword().equals(password)) {
-            response = String.format("Incorrect password, please try again");
+            response = String.format("Incorrect password, please try again\n");
         }
 
         if (choice == 0) {
@@ -90,7 +90,7 @@ public class Services {
             double conv_amount = conversion(temp.getCurrency(), currency, amount);
             temp.setBalance(temp.getBalance() + conv_amount);
 
-            response = String.format("Deposit for account number %d successful\n Balance is %.2f %s", accNum, temp.getBalance(), temp.getCurrency());
+            response = String.format("Deposit for account number %d successful\nBalance is %.2f %s\n", accNum, temp.getBalance(), temp.getCurrency());
 
             sendUpdate(String.format("Balance of account %d has been updated", accNum));
         }
@@ -103,14 +103,14 @@ public class Services {
             double conv_amount = conversion(temp.getCurrency(), currency, amount);
             if (temp.getBalance() >= conv_amount) {
                 temp.setBalance(temp.getBalance() - conv_amount);
-                response = String.format("Withdrawal for account number %d successful\n Amount of %.2f %s has been withdrawn. Balance is %.2f %s", accNum, amount, currency, temp.getBalance(), temp.getCurrency());
+                response = String.format("Withdrawal for account number %d successful\nAmount of %.2f %s has been withdrawn. Balance is %.2f %s\n", accNum, amount, currency, temp.getBalance(), temp.getCurrency());
 
-                sendUpdate(String.format("Balance of %d has been updated", accNum));
+                sendUpdate(String.format("Balance of account %d has been updated", accNum));
             } else {
-                response = String.format("Insuffient Balance. Current balance: ", temp.getBalance());
+                response = String.format("Insuffient Balance. Current balance: %.2f %s\n", temp.getBalance(), temp.getCurrency());
             }
         } else
-            response = String.format("Invalid choice, try again.");
+            response = String.format("Invalid choice, try again.\n");
 
         return response;
 
@@ -122,15 +122,15 @@ public class Services {
         Account temp = accountdb.get(accNum);
 
         if (temp == null) {
-            response = String.format("Account does not exist");
+            response = String.format("Account does not exist\n");
         } else {
             if (!temp.getName().equals(name)) {
                 System.out.println(temp.getName() + " " + name);
-                response = String.format("The acccount holder is not linked to this account.");
+                response = String.format("The acccount holder is not linked to this account.\n");
             } else if (temp.getPassword().equals(pw)) {
-                response = String.format("Your balance is %.2f %s", temp.getBalance(), temp.getCurrency());
+                response = String.format("Your balance is %.2f %s\n", temp.getBalance(), temp.getCurrency());
             } else {
-                response = String.format("Incorrect password, please try again.");
+                response = String.format("Incorrect password, please try again.\n");
             }
         }
 
@@ -141,16 +141,16 @@ public class Services {
         String response = "";
         Account temp = accountdb.get(accNum);
         if (temp == null) {
-            response = String.format("Unable to close account, account does not exist.");
+            response = String.format("Unable to close account, account does not exist.\n");
         } else {
             if (!temp.getName().equals(name)) {
-                response = String.format("The acccount holder is not linked to this account.");
+                response = String.format("The acccount holder is not linked to this account.\n");
             } else if (temp.getPassword().equals(pw)) {
                 accountdb.remove(accNum);
-                response = String.format("Account %d successfully removed.", accNum);
+                response = String.format("Account %d successfully removed.\n", accNum);
                 sendUpdate(String.format("Account %d has been deleted", accNum));
             } else {
-                response = String.format("Incorrect password, please try again.");
+                response = String.format("Incorrect password, please try again.\n");
             }
         }
 
@@ -164,27 +164,28 @@ public class Services {
 
         if (accountdb.get(accNum) == null) {
             if (accountdb.get(rec) == null) {
-                response = String.format("Sender and Receiver account numbers, %d and %d, do not exist", accNum, rec);
+                response = String.format("Sender and Receiver account numbers, %d and %d, do not exist\n", accNum, rec);
             } else {
-                response = String.format("Sender's account number %d does not exist", accNum);
+                response = String.format("Sender's account number %d does not exist\n", accNum);
             }
         } else if (accountdb.get(rec) == null) {
-            response = String.format("Receiver's account number %d does not exist", accNum);
+            response = String.format("Receiver's account number %d does not exist\n", accNum);
         } else {
             sender = accountdb.get(accNum);
             receiver = accountdb.get(rec);
 
             if (!sender.getPassword().equals(pw)) {
-                response = String.format("Incorrect password, please try again.");
+                response = String.format("Incorrect password, please try again.\n");
             }
             else{
                 double conv_amount = conversion(sender.getCurrency(), receiver.getCurrency(), amount);
                 if (sender.getBalance() >= amount) {
                     sender.setBalance(sender.getBalance() - amount);
                     receiver.setBalance(receiver.getBalance() + conv_amount);
-                    response = String.format("Successful transfer to %s. Your balance is %.2f %s", receiver.getName(), sender.getBalance(), sender.getCurrency());
+                    response = String.format("Successful transfer to %s. Your balance is %.2f %s\n", receiver.getName(), sender.getBalance(), sender.getCurrency());
+                    sendUpdate(String.format("Balance of account %d and %d have been updated", receiver.getAccountNumber(), sender.getAccountNumber()));
                 } else {
-                    response = String.format("Insufficient funds, your balance is %.2f %s", sender.getBalance(), sender.getCurrency());
+                    response = String.format("Insufficient funds, your balance is %.2f %s\n", sender.getBalance(), sender.getCurrency());
                 }
             }
         }
@@ -196,7 +197,7 @@ public class Services {
         long timestamp = Instant.now().getEpochSecond();
         timestamp += TimeUnit.MINUTES.toMillis(duration);
         clientdb.put(String.format("%s:%d", ip, port), timestamp);
-        return "Registered client to updates list";
+        return "Registered client to updates list\n";
     }
 
     private void sendUpdate(String msg) {

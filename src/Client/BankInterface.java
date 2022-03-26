@@ -72,25 +72,29 @@ public class BankInterface {
     }
 
     public static String createAccount() {
+        
+        System.out.println();
         String option = "1";
         String name = askName();
         String pw = askPassword(true);
         String currency = askCurrencyType();
         Double balance = askInitialBalance();
 
-        System.out.printf("Your name is %s\nPassword: %s\nDepositing in %s\nWith the amount of %.2f\n", name, pw, currency, balance);
+        System.out.printf("\nYour name: %s\nPassword: %s\nDepositing in: %s\nWith the amount: %.2f\n\n", name, pw, currency, balance);
         String payload = String.join("_", option, name, pw, currency, balance.toString());
 
         return payload;
     }
 
     public static String closeAccount() {
+
+        System.out.println();
         String option = "2";
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n", name, acct, pw);
+        System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\n\n", name, acct, pw);
         String payload = String.join("_", option, name, acct, pw);
 
         return payload;
@@ -98,6 +102,7 @@ public class BankInterface {
 
     public static String transfer(boolean deposit) {
 
+        System.out.println();
         String option = deposit ? "3" : "4";
         String name = askName();
         String acct = askAccountNumber();
@@ -106,7 +111,7 @@ public class BankInterface {
         Double balance = askTransferAmount(deposit);
         String process = deposit ? "Depositing" : "Withdrawing";
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n%s: %s %.2f\n", name, acct, pw, process, currency, balance);
+        System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\n%s: %.2f %s\n\n", name, acct, pw, process, balance, currency);
         String payload = String.join("_", option, name, acct, pw, currency, balance.toString());
 
         //reply with "Done"
@@ -115,28 +120,34 @@ public class BankInterface {
     }
 
     public static String monitorUpdate() {
+
+        System.out.println();
         String option = "5";
         Integer interval = askMonitorInterval();
 
-        System.out.printf("Setting Monitor Interval(min): %d\n", interval);
+        System.out.printf("\nSetting Monitor Interval(min): %d\n\n", interval);
         String payload = String.join("_", option, interval.toString());
 
         return payload;
     }
 
     public static String checkBalance() {
+
+        System.out.println();
         String option = "6";
         String name = askName();
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n", name, acct, pw);
+        System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\n\n", name, acct, pw);
         String payload = String.join("_", option, name, acct, pw);
 
         return payload;
     }
 
     public static String transferMoney() {
+
+        System.out.println();
         String option = "7";
         String name = askName();
         String acct = askAccountNumber();
@@ -144,7 +155,7 @@ public class BankInterface {
         String acctTo = askAccountNumberTo();
         Double balance = askTransferAmount(false);
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\nTransfering: %.2f dollars\nTo Account Number: %s\n", name, acct, pw, balance, acctTo);
+        System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\nTransfering: %.2f dollars\nTo Account Number: %s\n\n", name, acct, pw, balance, acctTo);
         String payload = String.join("_", option, name, acct, pw, balance.toString(), acctTo);
 
         //reply with "Done"
@@ -179,11 +190,13 @@ public class BankInterface {
         String[] currencies = new String[] {
                 "SGD", "USD", "EUR"
         };
-        System.out.println("Please select a currency type: ");
+
+        
         for (int i = 0; i < currencies.length; i++) {
             System.out.printf("%d. %s\n", i+1, currencies[i]);
         }
-
+        System.out.print("Please select a currency type: ");
+        
         String option = sc.next();
         int int_option = -1;
 
