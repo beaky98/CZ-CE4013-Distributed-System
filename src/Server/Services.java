@@ -12,7 +12,7 @@ public class Services {
 
 
 
-    public static String createAccount(String name, String pw, double balance){
+    public static String createAccount(String name, String pw, String currency, double balance){
         int accNum = -1;
 		int min = 1000;
 		int max = 9999;
@@ -27,6 +27,7 @@ public class Services {
         newAcc.setName(name);
         newAcc.setPassword(pw);
         newAcc.setBalance(balance);
+        newAcc.setCurrency(currency);
         accountdb.put(accNum,newAcc);
 
         response = String.format("Account created, your account number is: %d", accNum);
@@ -34,7 +35,7 @@ public class Services {
         return response;
     }
 
-    public static String updateBalance(String name, int accNum, String password, int choice, double amount){
+    public static String updateBalance(String name, int accNum, String password, int choice, String currency, double amount){
         String response = "";
 
         //Check if account number exists in database
@@ -114,7 +115,7 @@ public class Services {
         return response;
     }
 
-    public static String transferBalance(String name, int accNum, int rec, String pw, double amount){
+    public static String transferBalance(String name, int accNum, String pw, String currency, double amount, int rec){
         String response = "";
         
         Account sender, receiver;

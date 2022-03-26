@@ -2,7 +2,6 @@ package src;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import java.text.DecimalFormat;
 
 public class BankInterface {
 
@@ -57,13 +56,13 @@ public class BankInterface {
                 request = monitorUpdate();
                 break;
             case 6:
-                request = checkBankBalance();  
+                request = checkBalance();  
                 break;
             case 7:
-                request = transferMoney(false);
+                request = transferMoney();
                 break;
             case 0:
-                request = "0";
+                request = String.join("_","0","0");
                 break;
             default:
                 System.out.println("No such option");
@@ -90,14 +89,14 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
 
-        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n"), name, acct, pw);
+        System.out.printf("Your name is %s\nAccount Number: %s\nPassword: %s\n", name, acct, pw);
         String payload = String.join("_", option, name, acct, pw);
 
         return payload;
     }
 
     public static String transfer(boolean deposit) {
-        
+
         String option = deposit ? "3" : "4";
         String name = askName();
         String acct = askAccountNumber();
@@ -124,7 +123,7 @@ public class BankInterface {
         return payload;
     }
 
-    public static String checkBankBalance() {
+    public static String checkBalance() {
         String option = "6";
         String name = askName();
         String acct = askAccountNumber();
@@ -136,7 +135,7 @@ public class BankInterface {
         return payload;
     }
 
-    public static String transferMoney(boolean deposit) {
+    public static String transferMoney() {
         String option = "7";
         String name = askName();
         String acct = askAccountNumber();

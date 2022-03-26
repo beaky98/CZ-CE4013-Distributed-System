@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 import picocli.CommandLine.*;
+import src.Server.*;
 
 @Command(name = "server", description = "Does cool stuff.", mixinStandardHelpOptions = true)
 public class Server implements Callable<Integer> {
@@ -44,9 +45,9 @@ public class Server implements Callable<Integer> {
 			String req = new String(packet.getData(), 0, packet.getLength());
 			System.out.println("Client: " + req);
 
-			// TODO: Unmarshal request to get request id
-			String[] reqArr = req.split("_", 2);
-			for (int i=0; i<2; i++)
+			//Unmarshal request to get request id
+			String[] reqArr = req.split("_");
+			for (int i=0; i<reqArr.length; i++)
 				System.out.println(reqArr[i]);
 			String reqId = reqArr[0];
 
@@ -57,12 +58,47 @@ public class Server implements Callable<Integer> {
 			InetAddress ip = packet.getAddress();
 			int port = packet.getPort();
 
+			// Exit the server if the client sends "bye"
+			if (reqArr[0].equals("0")) {
+				System.out.println("Client sent bye.....EXITING");
+				break;
+			}
 			// New request
 			if (res == null) {
-				// TODO: Unmarshal request to get request type
-				// TODO: Banking Service perfoms request and returns response
-				// TODO: Marshal response
-				res = "Got message: " + reqArr[1];
+
+				String response = "";
+				switch (Integer.parseInt(reqArr[0])) { 				// Unmarshal request to get request type
+					case 1:
+						response = createAccount(reqArr[1], reqArr[2], reqArr[3], Double.parseDouble(reqArr[4]));
+						break;
+					case 2:
+						response = closeAccount(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3]);
+						break;
+					case 3:
+						response= updateBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], 0, reqArr[4], Double.parseDouble(reqArr[5]));
+						break;
+					case 4:
+						response = updateBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], 1, reqArr[4], Double.parseDouble(reqArr[5]));
+						break;
+					case 5:
+						response = monitorUpdate(); //this one not done
+						break;
+					case 6:
+						response = checkBalance(Integer.parseInt(reqArr[2]), reqArr[3]);  
+						break;
+					case 7:
+						response = transferBalance(reqArr[1], Integer.parseInt(reqArr[2]), reqArr[3], reqArr[4], Double.parseDouble(reqArr[5]), Integer.parseInt(reqArr[6]));
+						break;
+					default:
+						System.out.println("Option not found");
+				}
+
+
+				// TODO: Banking Service perfoms request and returns response. KK: NO NEED HOR?
+				// TODO: Marshal response. KK: NO NEED HOR?
+
+				res = response;
+				//res = "Got message: " + reqArr[1];
 
 				// Stores response
 				storeRes(reqId, res);
@@ -75,11 +111,7 @@ public class Server implements Callable<Integer> {
 				System.out.println("Dropping packet...");
 			}
 
-			// Exit the server if the client sends "bye"
-			if (reqArr[1].equals("0")) {
-				System.out.println("Client sent bye.....EXITING");
-				break;
-			}
+
 		}
 		ds.close();
 		return 0;
