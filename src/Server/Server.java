@@ -47,8 +47,12 @@ public class Server implements Callable<Integer> {
 			// Create and receive packet
 			DatagramPacket packet = receive();
 
+			// Get client address and port
+			InetAddress ip = packet.getAddress();
+			int port = packet.getPort();
+
 			String req = new String(packet.getData(), 0, packet.getLength());
-			System.out.println("Client: " + req);
+			System.out.printf("[Request] %s\n", req);
 
 			//Unmarshal request to get request id
 			String[] reqArr = req.split("_");
@@ -58,10 +62,6 @@ public class Server implements Callable<Integer> {
 
 			// Checks if request has been sent before
 			String res = checkReqId(reqId);
-
-			// Get client address and port
-			InetAddress ip = packet.getAddress();
-			int port = packet.getPort();
 
 			// Exit the server if the client sends "bye"
 			if (reqArr[1].equals("-1")) {
@@ -99,16 +99,12 @@ public class Server implements Callable<Integer> {
 						response = "Option not found";
 				}
 
-
-				// TODO: Banking Service perfoms request and returns response. KK: NO NEED HOR?
-				// TODO: Marshal response. KK: NO NEED HOR?
-
 				res = response;
-				//res = "Got message: " + reqArr[1];
 
 				// Stores response
 				storeRes(reqId, res);
 			}
+			System.out.printf("[Response] %s\n", res);
 
 			if (Math.random() > loss_rate) {
 				send(res, ip, port);

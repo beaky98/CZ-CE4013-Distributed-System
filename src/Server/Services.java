@@ -85,8 +85,6 @@ public class Services {
         }
 
         if (choice == 0) {
-            System.out.println("Attempting Deposit");
-
             Account temp = accountdb.get(accNum);
 
             double conv_amount = conversion(temp.getCurrency(), currency, amount);
@@ -98,8 +96,6 @@ public class Services {
         }
 
         else if (choice == 1) {
-            System.out.println("Attempting withdrawal");
-
             Account temp = accountdb.get(accNum);
 
             double conv_amount = conversion(temp.getCurrency(), currency, amount);
@@ -128,7 +124,6 @@ public class Services {
             return response;
         } else {
             if (!temp.getName().equals(name)) {
-                System.out.println(temp.getName() + " " + name);
                 response = String.format("The acccount holder is not linked to this account.\n");
             } else if (temp.getPassword().equals(pw)) {
                 response = String.format("Your balance is %.2f %s\n", temp.getBalance(), temp.getCurrency());
@@ -213,7 +208,6 @@ public class Services {
 
         while (iter.hasNext()) {
             String key = iter.next();
-            System.out.println(key);
 
             // Checks if the update is still valid
             long timestamp = Instant.now().getEpochSecond();
@@ -222,10 +216,7 @@ public class Services {
             } else {
                 String[] arr = key.split(":");
                 String ip = arr[0];
-                System.out.println(ip);
-
                 int port = Integer.parseInt(arr[1]);
-                System.out.println(port);
 
                 try {
                     cb.sendMessage(msg, ip, port);
