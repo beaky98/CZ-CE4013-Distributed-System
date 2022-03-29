@@ -280,6 +280,7 @@ public class Services {
             // Checks if the update is still valid
             long timestamp = Instant.now().getEpochSecond();
             if (clientdb.get(key) < timestamp) {
+                System.out.printf("[Update]: %s has expired\n", key);
                 iter.remove();
             } else {
                 String[] arr = key.split(":");
@@ -288,6 +289,7 @@ public class Services {
 
                 try {
                     cb.sendMessage(msg, ip, port);
+                    System.out.printf("[Update] Sending message to %s:%d\n", ip, port);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

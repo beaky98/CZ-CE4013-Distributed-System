@@ -107,7 +107,7 @@ public class Client {
 		// Client receives all packets during this period of time
 		while (!Thread.interrupted()) {
 			try {
-				System.out.println("[UPDATE]: " + receive());
+				System.out.println("[Update]: " + receive());
 			} catch (SocketTimeoutException e) {
 				// No need to handle
 			} catch (IOException e) {
