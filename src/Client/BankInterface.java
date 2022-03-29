@@ -131,7 +131,7 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
         String currency = askCurrencyType();
-        Double balance = askTransferAmount(deposit);
+        Double balance = askTransferAmount(deposit ? "deposit" : "withdraw");
         String process = deposit ? "Depositing" : "Withdrawing";
 
         System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\n%s: %.2f %s\n\n", name, acct, pw, process, balance, currency);
@@ -186,7 +186,7 @@ public class BankInterface {
         String acct = askAccountNumber();
         String pw = askPassword(false);
         String acctTo = askAccountNumberTo();
-        Double balance = askTransferAmount(false);
+        Double balance = askTransferAmount("transfer");
 
         System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\nTransfering: %.2f dollars\nTo Account Number: %s\n\n", name, acct, pw, balance, acctTo);
         String payload = String.join("_", option, name, acct, pw, balance.toString(), acctTo);
@@ -311,11 +311,11 @@ public class BankInterface {
 
     /**
      * Request user to input transfer amount
-     * @param deposit To denote deposit or withdraw
+     * @param action Deposit, withdraw, transfer
      * @return Transfer amount
      */
-    public static Double askTransferAmount(boolean deposit) {
-        System.out.printf("Please enter amount to %s: ", deposit ? "deposit" : "withdraw");
+    public static Double askTransferAmount(String action) {
+        System.out.printf("Please enter amount to %s: ", action);
         Double amount = sc.nextDouble();
 
         return amount;

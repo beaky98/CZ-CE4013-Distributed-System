@@ -225,7 +225,7 @@ public class Services {
                 return response;
             }
         } else if (accountdb.get(rec) == null) {
-            response = String.format("Receiver's account number %d does not exist\n", accNum);
+            response = String.format("Receiver's account number %d does not exist\n", rec);
             return response;
         } else {
             sender = accountdb.get(accNum);
