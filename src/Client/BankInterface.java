@@ -2,12 +2,19 @@ package src.Client;
 
 import java.util.Scanner;
 
+/**
+ * User Interface of the Banking System
+ */
 public class BankInterface {
 
     private static int PW_LENGTH = 20;
 
     public static Scanner sc = new Scanner(System.in);
 
+    /**
+     * Prints out the various banking services' options
+     * @return Print Options
+     */
     public static String printOptions() {
         sc.useDelimiter(System.lineSeparator());
         System.out.println("+-------------------------------------------------------------+");
@@ -38,6 +45,9 @@ public class BankInterface {
         return printOptions();
     }
 
+    /**
+     * Switch case to select options
+     */
     public static String selectOption(Integer option) {
         String request = "";
         switch (option) {
@@ -62,7 +72,7 @@ public class BankInterface {
             case 7:
                 request = transferMoney();
                 break;
-            case 0: // Client exits interface
+            case 0:
                 request = "0";
                 break;
             default:
@@ -71,6 +81,10 @@ public class BankInterface {
         return request;
     }
 
+    /**
+     * Allows a user to open a new account by specifying  name, a password , the currency type of the account and the initial account balance. 
+     * @return Payload
+     */
     public static String createAccount() {
         
         System.out.println();
@@ -86,6 +100,10 @@ public class BankInterface {
         return payload;
     }
 
+    /**
+     * Allows a user to close an existing account by specifying name,  account number and the password.
+     * @return Payload
+     */
     public static String closeAccount() {
 
         System.out.println();
@@ -100,6 +118,11 @@ public class BankInterface {
         return payload;
     }
 
+    /**
+     * Allows a user to deposit/withdraw money into/from an account by specifying name, account number, the password, the currency type and amount to deposit/withdraw
+     * @param deposit To denote deposit or withdraw
+     * @return Payload
+     */
     public static String transfer(boolean deposit) {
 
         System.out.println();
@@ -114,11 +137,13 @@ public class BankInterface {
         System.out.printf("\nYour name: %s\nAccount Number: %s\nPassword: %s\n%s: %.2f %s\n\n", name, acct, pw, process, balance, currency);
         String payload = String.join("_", option, name, acct, pw, currency, balance.toString());
 
-        //reply with "Done"
-
         return payload;
     }
 
+    /**
+     * Allows a user to monitor updates made to all the bank accounts at the server through callback for a designated time period by specifying monitor interval
+     * @return Payload
+     */
     public static String monitorUpdate() {
 
         System.out.println();
@@ -131,6 +156,10 @@ public class BankInterface {
         return payload;
     }
 
+    /**
+     * Allows a user to check the current balance in the account by specifying name, account number, the password.
+     * @return Payload
+     */
     public static String checkBalance() {
 
         System.out.println();
@@ -145,6 +174,10 @@ public class BankInterface {
         return payload;
     }
 
+    /**
+     * Allows a user to transfer money into another account by specifying name, account number, the password, recipient account number, the currency type and amount to transfer
+     * @return Payload
+     */
     public static String transferMoney() {
 
         System.out.println();
@@ -163,6 +196,10 @@ public class BankInterface {
         return payload;
     }
 
+    /**
+     * Request user to input name
+     * @return Username
+     */
     public static String askName() {
         System.out.print("Please enter your name: ");
         String name = sc.next();
@@ -170,6 +207,11 @@ public class BankInterface {
         return name;
     }
 
+    /**
+     * Request user to input password
+     * @param creating denote whether creation of account or checking password
+     * @return Password
+     */
     public static String askPassword(boolean creating) {
         String msg = "";
         if (creating) {
@@ -186,6 +228,10 @@ public class BankInterface {
         return pw;
     }
 
+    /**
+     * Request user to input currency type 
+     * @return Currency type
+     */
     public static String askCurrencyType() {
         String[] currencies = new String[] {
                 "SGD", "USD", "EUR"
@@ -219,6 +265,10 @@ public class BankInterface {
         return currencies[int_option];
     }
 
+    /**
+     * Request user to input initial balance for new account
+     * @return Initial balance
+     */
     public static Double askInitialBalance() {
         System.out.println("Please enter initial account balance: ");
         Double balance = sc.nextDouble();
@@ -226,6 +276,10 @@ public class BankInterface {
         return balance;
     }
 
+    /**
+     * Request user to input monitor interval
+     * @return Interval
+     */
     public static Integer askMonitorInterval() {
         System.out.print("Please enter the monitor interval (min): ");
         int interval = sc.nextInt();
@@ -233,7 +287,10 @@ public class BankInterface {
         return interval;
     }
 
-
+    /**
+     * Request user to input account number
+     * @return Account number
+     */
     public static String askAccountNumber() {
         System.out.print("Please enter your account number: ");
         String acct = sc.next();
@@ -241,6 +298,10 @@ public class BankInterface {
         return acct;
     }
 
+    /**
+     * Request user to input recipient account number
+     * @return Recipient account number
+     */
     public static String askAccountNumberTo() {
         System.out.print("Please enter the account number you are transferring to: ");
         String acct = sc.next();
@@ -248,6 +309,11 @@ public class BankInterface {
         return acct;
     }
 
+    /**
+     * Request user to input transfer amount
+     * @param deposit To denote deposit or withdraw
+     * @return Transfer amount
+     */
     public static Double askTransferAmount(boolean deposit) {
         System.out.printf("Please enter amount to %s: ", deposit ? "deposit" : "withdraw");
         Double amount = sc.nextDouble();
@@ -255,6 +321,9 @@ public class BankInterface {
         return amount;
     }
 
+    /**
+     * To exit the banking service
+     */
     public static void exitMessage() {
         System.out.println("Thanks for banking with us!");
     }

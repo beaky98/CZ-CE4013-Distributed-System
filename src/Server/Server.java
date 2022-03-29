@@ -35,7 +35,9 @@ public class Server implements Callable<Integer> {
 	// Services 
 	private Services bankService;
 
-	// Main class
+	/**
+	 * Main class
+	 */
 	public Integer call() throws Exception {
 		// Create socket
 		ds = new DatagramSocket(server_port);

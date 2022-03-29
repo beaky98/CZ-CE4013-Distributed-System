@@ -6,9 +6,13 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 
-@Command(name = "app", description = "Does cool stuff.", mixinStandardHelpOptions = true)
+/**
+ * Main application
+ */
+@Command(name = "app", description = "Starts the client for this app.", mixinStandardHelpOptions = true)
 public class App implements Callable<Integer> {
 
+    // Additional flags for CLI
     @Option(names = "--ip", description = "server ip")
     String ip = "127.0.0.1";
 
@@ -21,6 +25,9 @@ public class App implements Callable<Integer> {
     @Option(names = "--resend", description = "resend")
     boolean resend = true;
 
+    /**
+     * Main class
+     */
     public Integer call() throws Exception {
 
         try {
@@ -39,7 +46,6 @@ public class App implements Callable<Integer> {
                     break;
                 }
 
-                // TODO: Marshal request
                 String req = client.getReqId() + '_' + payload;
 
                 // Waits for response from server
@@ -65,6 +71,10 @@ public class App implements Callable<Integer> {
         return 0;
     }
 
+    /**
+     * Calls main function with CLI arguments
+     * @param args Additional CLI arguments
+     */
     public static void main(String[] args) {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
