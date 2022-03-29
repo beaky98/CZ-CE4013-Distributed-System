@@ -1,5 +1,7 @@
 package src.Server;
-
+/**
+ * Class that represents an account
+ */
 public class Account {
     private int accountNumber;
     private String name;
@@ -8,6 +10,16 @@ public class Account {
     private String currency;
 
     public Account(){};
+
+    /**
+     * Creates an account
+     * @param accountNumber
+     * @param name
+     * @param pw
+     * @param balance
+     * @param currency
+     */
+
     public Account(int accountNumber, String name, String pw, double balance, String currency){ 
         this.accountNumber = accountNumber;
         this.name = name;
