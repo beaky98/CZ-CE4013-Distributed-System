@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *  Class that contains the functions of the Bank's services
+ */
+
 public class Services {
     public static HashMap<Integer, Account> accountdb;
 
@@ -21,7 +25,14 @@ public class Services {
 
     private static double u2s = 1.36;
     private static double e2s = 1.49;
-
+    /**
+     * Creates an account
+     * @param name Name of account holder
+     * @param pw Password for authenticating user
+     * @param currency Currency stored in account
+     * @param balance Current balance amount in account
+     * @return Confirmation message with unique ID of account number
+     */
     public String createAccount(String name, String pw, String currency, double balance) {
         int accNum = -1;
         int min = 1000;
@@ -47,6 +58,13 @@ public class Services {
         return response;
     }
 
+    /**
+     * Converts currencies between USD-SGD-EUR
+     * @param accCurrency Currency of the balance stored in sender's account
+     * @param currency Target currency to convert into
+     * @param amount Amount that needs to be converted
+     * @return The amount after conversion
+     */
     private double conversion(String accCurrency, String currency, double amount) {
         if (!accCurrency.equals(currency)) {
             switch (currency) {
@@ -69,6 +87,17 @@ public class Services {
         }
         return amount;
     }
+
+    /**
+     * Updates the balance of the account
+     * @param name Name of account holder
+     * @param accNum Unique ID the account
+     * @param password Password to authenticate the user
+     * @param choice Whether the user wants to deposit or withdraw
+     * @param currency Currency of the amount that is being deposited/withdrawn
+     * @param amount Amount that is being deposited/withdrawn
+     * @return Result of update request (Error / Acknowledgement)
+     */
 
     public String updateBalance(String name, int accNum, String password, int choice, String currency, double amount) {
         String response = "";
@@ -114,6 +143,14 @@ public class Services {
 
     }
 
+    /**
+     * Checks the balance of account number
+     * @param name Name of account holder
+     * @param accNum Unique ID of account
+     * @param pw Password to authenticate user
+     * @return Result of check request (Error / Acknowledgement)
+     */
+
     public String checkBalance(String name, int accNum, String pw) {
         String response = "";
 
@@ -135,6 +172,14 @@ public class Services {
         return response;
     }
 
+    /**
+     * Closes a specific account
+     * @param name Name of account holder
+     * @param accNum Unique ID of account
+     * @param pw Password to authenticate user
+     * @return Result of close request (Error / Acknowledgement)
+     */
+
     public String closeAccount(String name, int accNum, String pw) {
         String response = "";
         Account temp = accountdb.get(accNum);
@@ -155,6 +200,16 @@ public class Services {
 
         return response;
     }
+
+    /**
+     * Transfers money from the sender's account to another account
+     * @param name 
+     * @param name Name of account holder
+     * @param accNum Unique ID of sender's account
+     * @param pw Password to authenticate user
+     * @param rec Unique ID of receiver's account
+     * @return Result of transfer request (Error / Acknowledgement)
+     */
 
     public String transferBalance(String name, int accNum, String pw, double amount, int rec) {
         String response = "";
@@ -195,6 +250,14 @@ public class Services {
         return response;
     }
 
+    /**
+     * Registers client into a list of whom to send any server updates
+     * @param ip IP address of client
+     * @param port Port to send updates
+     * @param duration Duration in which updates will be sent
+     * @return Confirmation of registration
+     */
+
     public String monitorUpdate(String ip, int port, int duration) {
 
         long timestamp = Instant.now().getEpochSecond();
@@ -202,6 +265,11 @@ public class Services {
         clientdb.put(String.format("%s:%d", ip, port), timestamp);
         return "Registered client to updates list\n";
     }
+
+    /**
+     * Sends any server updates to registered clients
+     * @param msg
+     */
 
     private void sendUpdate(String msg) {
         Iterator<String> iter = clientdb.keySet().iterator();
