@@ -17,13 +17,13 @@ import picocli.CommandLine.*;
 public class Server implements Callable<Integer> {
 
 	// Additional flags for CLI
-    @Option(names = "--port", description = "port number")
+    @Option(names = "--port", description = "Port number to host the server on.")
 	int server_port = 2222;
 
-    @Option(names = "--loss", description = "percentage of packet loss")
+    @Option(names = "--loss", description = "Simulated rate of packet loss.")
 	double loss_rate = 0.2;
 	
-    @Option(names = "--atleastonce", description = "at-least-once invocation semantic")
+    @Option(names = "--atleastonce", description = "Flag to use at-least-once invocation semantic.")
 	boolean at_least_once = false;
 	
 	// Socket to send and receive packets

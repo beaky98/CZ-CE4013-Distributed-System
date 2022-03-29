@@ -123,11 +123,11 @@ public class Client {
 	 * 
 	 * @param msg     Message to be sent
 	 * @param timeout Time to wait in milliseconds
-	 * @param resend Flag to keep resending message until success
+	 * @param noResend Flag to not resend message
 	 * @return Message from server
 	 * @throws IOException
 	 */
-	public String sendWithTimeout(String msg, int timeout, boolean resend) throws IOException {
+	public String sendWithTimeout(String msg, int timeout, boolean noResend) throws IOException {
 		send(msg);
 		this.ds.setSoTimeout(timeout);
 
@@ -135,10 +135,10 @@ public class Client {
 			try {
 				return receive();
 			} catch (SocketTimeoutException e) {
-				if (resend) {
+				if (!noResend) {
 					// Resends packet if no response received within the time interval
 					System.out.println("No response received, resending packet...");
-					return sendWithTimeout(msg, timeout, resend);
+					return sendWithTimeout(msg, timeout, noResend);
 				}
 				return null;
 			}

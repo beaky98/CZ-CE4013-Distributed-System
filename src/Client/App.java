@@ -13,17 +13,17 @@ import picocli.CommandLine.*;
 public class App implements Callable<Integer> {
 
     // Additional flags for CLI
-    @Option(names = "--ip", description = "server ip")
+    @Option(names = "--ip", description = "IP address of server to connect to.")
     String ip = "127.0.0.1";
 
-    @Option(names = "--port", description = "port number")
+    @Option(names = "--port", description = "Port number of server to connect to.")
     int port = 2222;
 
-    @Option(names = "--timeout", description = "timeout")
+    @Option(names = "--timeout", description = "Time in milliseconds to wait before resending messages.")
     int timeout = 1000;
 
-    @Option(names = "--resend", description = "resend")
-    boolean resend = true;
+    @Option(names = "--noresend", description = "Flag to not resend messages if no response received.")
+    boolean noResend = false;
 
     /**
      * Main class
@@ -49,7 +49,7 @@ public class App implements Callable<Integer> {
                 String req = client.getReqId() + '_' + payload;
 
                 // Waits for response from server
-                String res = client.sendWithTimeout(req, timeout, resend);
+                String res = client.sendWithTimeout(req, timeout, noResend);
                 if (res != null) {
                     System.out.println(res);
                 } else {
