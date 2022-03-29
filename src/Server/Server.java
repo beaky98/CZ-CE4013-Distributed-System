@@ -1,7 +1,5 @@
 package src.Server;
 
-// Java program to illustrate Server side
-// Implementation using DatagramSocket
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,23 +10,32 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 
-@Command(name = "server", description = "Does cool stuff.", mixinStandardHelpOptions = true)
+/**
+ * Server class for Clients to connect to through UDP sockets
+ */
+@Command(name = "server", description = "Starts the server for this app.", mixinStandardHelpOptions = true)
 public class Server implements Callable<Integer> {
 
+	// Additional flags for CLI
     @Option(names = "--port", description = "port number")
 	int server_port = 2222;
 
     @Option(names = "--loss", description = "percentage of packet loss")
 	double loss_rate = 0.2;
 	
-    @Option(names = "--once", description = "at-least-once invocation semantic")
+    @Option(names = "--atleastonce", description = "at-least-once invocation semantic")
 	boolean at_least_once = false;
 	
+	// Socket to send and receive packets
 	private DatagramSocket ds;
+
+	// HashMap to keep track of requestIDs and their responses
 	private HashMap<String, String> reqList;
 
+	// Services 
 	private Services bankService;
 
+	// Main class
 	public Integer call() throws Exception {
 		// Create socket
 		ds = new DatagramSocket(server_port);
@@ -56,24 +63,17 @@ public class Server implements Callable<Integer> {
 
 			//Unmarshal request to get request id
 			String[] reqArr = req.split("_");
-			// for (int i=0; i<reqArr.length; i++)
-			// 	System.out.println(reqArr[i]);
 			String reqId = reqArr[0];
 
 			// Checks if request has been sent before
 			String res = checkReqId(reqId);
 
-			// Exit the server if the client sends "bye"
-			if (reqArr[1].equals("-1")) {
-				System.out.println("Client sent bye.....EXITING");
-				break;
-			}
-
-			// New request
+			// Process new request
 			if (res == null) {
-
 				String response = "";
-				switch (Integer.parseInt(reqArr[1])) { 				// Unmarshal request to get request type
+
+				// Unmarshal request to get request type
+				switch (Integer.parseInt(reqArr[1])) {
 					case 1:
 						response = bankService.createAccount(reqArr[2], reqArr[3], reqArr[4], Double.parseDouble(reqArr[5]));
 						break;
@@ -87,7 +87,7 @@ public class Server implements Callable<Integer> {
 						response = bankService.updateBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4], 1, reqArr[5], Double.parseDouble(reqArr[6]));
 						break;
 					case 5:
-						response = bankService.monitorUpdate(ip.getHostAddress(), port, Integer.parseInt(reqArr[2])); //this one not done
+						response = bankService.monitorUpdate(ip.getHostAddress(), port, Integer.parseInt(reqArr[2]));
 						break;
 					case 6:
 						response = bankService.checkBalance(reqArr[2], Integer.parseInt(reqArr[3]), reqArr[4]);  
@@ -106,6 +106,7 @@ public class Server implements Callable<Integer> {
 			}
 			System.out.printf("[Response] %s\n", res);
 
+			// Simulate chance to drop the message
 			if (Math.random() > loss_rate) {
 				send(res, ip, port);
 			}
@@ -115,8 +116,6 @@ public class Server implements Callable<Integer> {
 
 
 		}
-		ds.close();
-		return 0;
 	}
 
 	/**
@@ -173,12 +172,26 @@ public class Server implements Callable<Integer> {
 			reqList.put(reqId, response);
 	}
 	
+	/**
+	 * Implementation of callback
+	 */
 	public class CallbackHandler implements Callback {
+		/**
+		 * Sends a message to the ip and port
+		 * @param msg Message to be sent
+		 * @param ip Ip address of client
+		 * @param port Port of client
+		 * @throws IOException
+		 */
 		public void sendMessage(String msg, String ip, int port) throws IOException {
 			send(msg, InetAddress.getByName(ip), port);
 		}
 	}
 
+	/**
+	 * Calls main function with CLI arguments
+	 * @param args Additional CLI arguments
+	 */
 	public static void main(String[] args) {
         int exitCode = new CommandLine(new Server()).execute(args);
         System.exit(exitCode);

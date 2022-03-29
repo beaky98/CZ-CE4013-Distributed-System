@@ -1,19 +1,27 @@
 package src.Client;
 
-// Java program to illustrate Client side
-// Implementation using DatagramSocket
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 
+/**
+ * Client class for connecting to Server through UDP sockets
+ */
 public class Client {
+	// Socket to send packets from
 	private DatagramSocket ds;
+
+	// Ip and port of server to connect to
 	private InetAddress ip;
 	private int port;
+
+	// Ip and port of client
 	private String clientId;
 	private int clientPort;
+
+	// Req count to differentiate between messages
 	private int reqCount;
 
 	/**
@@ -32,8 +40,7 @@ public class Client {
 		this.ip = InetAddress.getByName(ip);
 		this.port = port;
 
-		// this.ds.connect(this.ip, this.port);
-
+		// Store own IP and port
 		this.clientId = InetAddress.getLocalHost().getHostAddress();
 		this.clientPort = this.ds.getLocalPort();
 		this.reqCount = 0;
@@ -76,28 +83,33 @@ public class Client {
 		return received;
 	}
 
+	/**
+	 * Pauses client for a duration of time.
+	 * Within this interval, client receives all packets from the server.
+	 * @param duration Time in minutes to wait for
+	 */
 	public void receiveAll(int duration) {
 		final Thread thisThread = Thread.currentThread();
-		final int timeToRun = duration * 60000; // time in millis
+		final int timeout = duration * 60000; // time in millis
 
+		// Starts a timer to interrupt the current thread after a period of time
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					Thread.sleep(timeToRun);
+					Thread.sleep(timeout);
 					thisThread.interrupt();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}).start();
 
+		// Client receives all packets during this period of time
 		while (!Thread.interrupted()) {
-			// do something interesting.
 			try {
 				System.out.println("[UPDATE]: " + receive());
 			} catch (SocketTimeoutException e) {
-				// This is okay
+				// No need to handle
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -124,6 +136,7 @@ public class Client {
 				return receive();
 			} catch (SocketTimeoutException e) {
 				if (resend) {
+					// Resends packet if no response received within the time interval
 					System.out.println("No response received, resending packet...");
 					return sendWithTimeout(msg, timeout, resend);
 				}
