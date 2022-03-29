@@ -20,10 +20,10 @@ public class Server implements Callable<Integer> {
     @Option(names = "--port", description = "Port number to host the server on.")
 	int server_port = 2222;
 
-    @Option(names = "--loss", description = "Simulated rate of packet loss")
+    @Option(names = "--loss", description = "Simulated rate of packet loss.")
 	double loss_rate = 0.2;
 	
-    @Option(names = "--atleastonce", description = "Flag to use at-least-once invocation semantic")
+    @Option(names = "--atleastonce", description = "Flag to use at-least-once invocation semantic.")
 	boolean at_least_once = false;
 	
 	// Socket to send and receive packets

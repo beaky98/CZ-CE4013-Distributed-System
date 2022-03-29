@@ -17,9 +17,9 @@ Server accepts optional parameters. Check --help for more information.
 ```
 Usage: server [-hV] [--atleastonce] [--loss=<loss_rate>] [--port=<server_port>]
 Starts the server for this app.
-      --atleastonce          Flag to use at-least-once invocation semantic
+      --atleastonce          Flag to use at-least-once invocation semantic.
   -h, --help                 Show this help message and exit.
-      --loss=<loss_rate>     Simulated rate of packet loss
+      --loss=<loss_rate>     Simulated rate of packet loss.
       --port=<server_port>   Port number to host the server on.
   -V, --version              Print version information and exit.
 ```
