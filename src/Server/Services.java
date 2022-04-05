@@ -60,8 +60,8 @@ public class Services {
 
     /**
      * Converts currencies between USD-SGD-EUR
-     * @param accCurrency Currency of the balance stored in sender's account
-     * @param currency Target currency to convert into
+     * @param accCurrency Currency of the balance stored in receiver's account
+     * @param currency Currency to convert
      * @param amount Amount that needs to be converted
      * @return The amount after conversion
      */
