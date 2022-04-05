@@ -67,7 +67,7 @@ public class Services {
      */
     private double conversion(String accCurrency, String currency, double amount) {
         if (!accCurrency.equals(currency)) {
-            switch (accCurrency) {
+            switch (currency) {
                 case "EUR":
                     amount *= e2s;
                     break;
@@ -76,7 +76,7 @@ public class Services {
                     break;
             }
 
-            switch (currency) {
+            switch (accCurrency) {
                 case "EUR":
                     amount /= e2s;
                     break;
